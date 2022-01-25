@@ -1,0 +1,19 @@
+{
+  "name": "Import images from csv",
+  "type": "app",
+  "categories": [
+    "import"
+  ],
+  "description": "Create images project from csv file with images and tags",
+  "docker_image": "supervisely/base-py-sdk:6.6.0",
+  "main_script": "src/main.py",
+  "task_location": "workspace_tasks",
+  "icon": "https://i.imgur.com/D8ffaAT.png",
+  "icon_cover": false,
+  "icon_background": "#FFFFFF",
+  "context_menu": {
+    "target": [
+      "files_file"
+    ]
+  }
+}
