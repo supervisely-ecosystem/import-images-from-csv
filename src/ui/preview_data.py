@@ -21,7 +21,7 @@ def download_and_preview_table(api, task_id, context, state, app_logger):
 
         all_images = [row[g.image_url_col_name] for row in reader]
         unique_images = list(set(all_images))
-        unique_tags = list(set([row[g.tag_col_name] for row in reader]))
+        unique_tags = f.flat_tag_list(list(set([row[g.tag_col_name] for row in reader])))
         duplicate_images = len(all_images) - len(unique_images)
 
     fields = [

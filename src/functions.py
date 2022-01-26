@@ -57,6 +57,24 @@ def process_image_by_url(image_url, app_logger):
     return success, image_name, image_path
 
 
+def flat_tag_list(unique_tags):
+    tags = []
+    for tag in unique_tags:
+        if g.TAGS_DELIMITER in tag:
+            tag = tag.split(g.TAGS_DELIMITER)
+        else:
+            tag = tag.split()
+        tags.append(tag)
+
+    unique_tags = []
+    for sublist in tags:
+        for tag in sublist:
+            unique_tags.append(tag)
+
+    unique_tags = list(set(unique_tags))
+    return unique_tags
+
+
 def process_ann(csv_row, project_meta, image_path, tag_col_name, need_tag):
     if csv_row[tag_col_name] is None or need_tag is False:
         image_shape = get_image_size(image_path)
