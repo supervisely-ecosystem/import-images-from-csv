@@ -11,9 +11,10 @@ def check_column_names(col_names_validate):
         raise Exception("IMAGE COLUMN NAME IS INVALID, PLEASE USE ONE OF:\n"
                         f"{g.possible_image_url_col_names} FOR URL AND "
                         f"{g.possible_image_path_col_names} FOR PATH")
-    if not any(tag_name in g.possible_tag_col_names for tag_name in col_names_validate):
-        raise Exception("TAG COLUMN NAME IS INVALID, PLEASE USE ONE OF:\n"
-                        f"{g.possible_tag_col_names}")
+    if len(col_names_validate) == 2:
+        if not any(tag_name in g.possible_tag_col_names for tag_name in col_names_validate):
+            raise Exception("TAG COLUMN NAME IS INVALID, PLEASE USE ONE OF:\n"
+                            f"{g.possible_tag_col_names}")
 
 
 def validate_csv_table(first_csv_row):
@@ -89,7 +90,7 @@ def flat_tag_list(unique_tags):
 
 
 def process_ann(csv_row, project_meta, image_path, tag_col_name, need_tag):
-    if csv_row[tag_col_name] is None or need_tag is False:
+    if tag_col_name is None or csv_row[tag_col_name] is None or need_tag == "ignore":
         image_shape = get_image_size(image_path)
         ann = sly.Annotation((image_shape[0], image_shape[1]))
         return ann, project_meta

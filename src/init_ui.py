@@ -17,6 +17,8 @@ def init_table_preview(data, state):
     state["duplicateImagesLen"] = None
     state["uniqueTagsLen"] = None
 
+    state["needTag"] = "add"
+
     data["table"] = ""
     data["connecting"] = False
 
@@ -30,7 +32,7 @@ def init_options(data, state):
     state["dstDatasetName"] = "my_dataset"
     state["selectedDatasetName"] = None
 
-    state["needTag"] = True
+    state["needTag"] = "add"
 
     data["processing"] = False
 

@@ -1,9 +1,22 @@
 <sly-card class="mt10"
           title="2. Import settings"
           subtitle="Configure data copying and destination project">
-    <sly-field title="Assign tags from csv table">
-        <el-checkbox v-model="state.needTag">Need tags</el-checkbox>
+
+
+    <sly-field title="Assign tags from csv table" v-show="state.uniqueTagsLen > 0">
+        <el-select v-model="state.needTag" placeholder="Select dataset year">
+            <el-option key="add" label="Add Tags" value="add"></el-option>
+            <el-option key="ignore" label="Ignore Tags" value="ignore"></el-option>
+        </el-select>
     </sly-field>
+
+    <!--    <div class="mt5" v-if="state.uniqueTagsLen === 0"-->
+    <!--         style="color: orange">-->
+    <!--        You can assign tags to images via .CSV file, read the application readme file for more details-->
+    <!--    </div>-->
+    <!--    <br>-->
+
+
     <sly-field title="Result project"
                description="Define destination project and dataset">
         <div class="fflex">
