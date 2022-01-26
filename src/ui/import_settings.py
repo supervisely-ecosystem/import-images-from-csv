@@ -6,6 +6,7 @@ import supervisely as sly
 
 def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_logger):
     project = None
+    project_meta = None
     ds_images_names = None
     csv_images_len = len(g.csv_reader)
     if state["dstProjectMode"] == "newProject":
@@ -14,7 +15,7 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
         project_meta = sly.ProjectMeta()
     elif state["dstProjectMode"] == "existingProject":
         project = api.project.get_info_by_id(state["dstProjectId"])
-        project_meta = api.project.get_meta(project.id)
+        project_meta = sly.ProjectMeta().from_json(api.project.get_meta(project.id))
     if project is None:
         sly.logger.error("Result project is None (not found or not created)")
         return
@@ -40,14 +41,23 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
                 continue
             success, image_name, image_path = f.process_image_by_url(row[image_url_col_name], app_logger)
 
-            if image_name in ds_images_names:
+            if success is False or image_name is None:
                 csv_images_len -= 1
-                app_logger.warn(f"{image_name} already exists in dataset: {dataset.name}")
+                app_logger.warn(f"Can't download {image_name}")
                 continue
 
-            if success is False:
+            if state["dstDatasetMode"] == "existingDataset":
+                if image_name in ds_images_names:
+                    csv_images_len -= 1
+                    app_logger.warn(f"{image_name} already exists in dataset: {dataset.name}")
+                    continue
+
+            if image_name in image_names:
+                csv_images_len -= 1
+                app_logger.warn(f"Duplicate {image_name} in csv file")
                 continue
-            ann, project_meta = f.process_ann(row, project_meta, image_path, tag_col_name)
+
+            ann, project_meta = f.process_ann(row, project_meta, image_path, tag_col_name, state["needTag"])
 
             image_paths.append(image_path)
             image_names.append(image_name)

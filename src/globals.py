@@ -22,9 +22,9 @@ project_name = get_file_name(INPUT_FILE)
 
 storage_dir = my_app.data_dir
 local_csv_path = os.path.join(storage_dir, "catalog.csv")
-# api.file.download(TEAM_ID, INPUT_FILE, local_csv_path)
 
 DEFAULT_DELIMITER = ','
+TAGS_DELIMITER = ';'
 
 possible_image_url_col_names = ["image url", "image-url", "image_url", "imageurl"]
 possible_tag_col_names = ["tag", "tags"]

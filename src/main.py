@@ -18,7 +18,6 @@ def process(api: sly.Api, task_id, context, state, app_logger):
     process_images_from_csv(api, state, g.image_url_col_name, g.tag_col_name, app_logger)
 
 
-
 def main():
     sly.logger.info("Script arguments", extra={
         "TEAM_ID": g.TEAM_ID,

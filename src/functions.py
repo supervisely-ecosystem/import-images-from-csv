@@ -57,17 +57,30 @@ def process_image_by_url(image_url, app_logger):
     return success, image_name, image_path
 
 
-def process_ann(csv_row, project_meta, image_path, tag_col_name):
-    tag_name = csv_row[tag_col_name].strip()
-    image_shape = get_image_size(image_path)
+def process_ann(csv_row, project_meta, image_path, tag_col_name, need_tag):
+    if csv_row[tag_col_name] is None or need_tag is False:
+        image_shape = get_image_size(image_path)
+        ann = sly.Annotation((image_shape[0], image_shape[1]))
+        return ann, project_meta
 
-    tag_meta = project_meta.get_tag_meta(tag_name)
-    if tag_meta is None:
-        image_tag_meta = sly.TagMeta(tag_name, sly.TagValueType.NONE)
-        project_meta = project_meta.add_tag_meta(image_tag_meta)
-        tag_col = sly.TagCollection([sly.Tag(image_tag_meta)])
+    tags = []
+    tag_names = csv_row[tag_col_name].strip()
+    if g.TAGS_DELIMITER in tag_names:
+        tag_names = tag_names.split(g.TAGS_DELIMITER)
     else:
-        tag_col = sly.TagCollection([sly.Tag(tag_meta)])
+        tag_names = tag_names.split()
 
+    for tag_name in tag_names:
+        tag_name.strip()
+        tag_meta = project_meta.get_tag_meta(tag_name)
+        if tag_meta is None:
+            image_tag_meta = sly.TagMeta(tag_name, sly.TagValueType.NONE)
+            project_meta = project_meta.add_tag_meta(image_tag_meta)
+            tags.append(image_tag_meta)
+        else:
+            tags.append(tag_meta)
+
+    image_shape = get_image_size(image_path)
+    tag_col = sly.TagCollection(tags)
     ann = sly.Annotation((image_shape[0], image_shape[1]), img_tags=tag_col)
     return ann, project_meta

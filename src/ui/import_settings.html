@@ -1,6 +1,9 @@
 <sly-card class="mt10"
           title="2. Import settings"
           subtitle="Configure data copying and destination project">
+    <sly-field title="Assign tags from csv table">
+        <el-checkbox v-model="state.needTag">Need tags</el-checkbox>
+    </sly-field>
     <sly-field title="Result project"
                description="Define destination project and dataset">
         <div class="fflex">

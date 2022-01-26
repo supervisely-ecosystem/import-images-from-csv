@@ -23,6 +23,8 @@ def init_options(data, state):
     state["dstDatasetName"] = "my_dataset"
     state["selectedDatasetName"] = None
 
+    state["needTag"] = True
+
     data["processing"] = False
 
 
