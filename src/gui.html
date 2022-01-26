@@ -1,0 +1,20 @@
+<div id="import-images-gcs">
+    <sly-style>
+        #import-images-gcs .input-label .right-side .text-muted {
+        color: black;
+        }
+    </sly-style>
+    <sly-stepper :active="state.activeStep">
+        <sly-stepper-item>
+            {% include 'src/ui/preview_data.html' %}
+        </sly-stepper-item>
+        <sly-stepper-item>
+            {% include 'src/ui/import_settings.html' %}
+        </sly-stepper-item>
+    </sly-stepper>
+</div>
+
+<pre>
+    {{ JSON.stringify(state, undefined, 4) }}
+    {{ JSON.stringify(data, undefined, 4) }}
+</pre>

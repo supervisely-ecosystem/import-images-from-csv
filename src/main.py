@@ -1,43 +1,22 @@
-import csv
 import globals as g
-import functions as f
 import supervisely as sly
+import init_ui
+
+from ui.preview_data import download_and_preview_table
+from ui.import_settings import process_images_from_csv
 
 
-@g.my_app.callback("import-images-from-csv")
+@g.my_app.callback("preview")
 @sly.timeit
-def import_images_from_csv(api: sly.Api, task_id, context, state, app_logger):
-    project = api.project.create(g.WORKSPACE_ID, g.project_name, sly.ProjectType.IMAGES, change_name_if_conflict=True)
-    project_meta = sly.ProjectMeta()
-    dataset = api.dataset.create(project.id, "ds0", change_name_if_conflict=True)
-    with open(g.local_csv_path, "r") as catalog_csv:
-        reader = csv.DictReader(catalog_csv, delimiter=g.DEFAULT_DELIMITER)
-        reader = [row for row in reader]
-        image_url_col_name, tag_col_name = f.validate_csv_table(reader[0])
-        progress = sly.Progress("processing CSV", len(reader))
-        for batch in sly.batched(reader):
-            image_paths = []
-            image_names = []
-            anns = []
-            for row in batch:
-                if len(row[image_url_col_name]) == 0:
-                    continue
-                success, image_name, image_path = f.process_image_by_url(row[image_url_col_name], app_logger)
-                if success is False:
-                    continue
-                ann, project_meta = f.process_ann(row, project_meta, image_path, tag_col_name)
+def preview(api: sly.Api, task_id, context, state, app_logger):
+    download_and_preview_table(api, task_id, context, state, app_logger)
 
-                image_paths.append(image_path)
-                image_names.append(image_name)
-                anns.append(ann)
 
-            api.project.update_meta(project.id, project_meta.to_json())
-            images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)
-            images_ids = [image_info.id for image_info in images_infos]
-            api.annotation.upload_anns(images_ids, anns)
-            progress.iters_done_report(len(batch))
+@g.my_app.callback("process")
+@sly.timeit
+def process(api: sly.Api, task_id, context, state, app_logger):
+    process_images_from_csv(api, state, g.image_url_col_name, g.tag_col_name, app_logger)
 
-    g.my_app.stop()
 
 
 def main():
@@ -47,8 +26,16 @@ def main():
         "INPUT_FILE": g.INPUT_FILE
     })
 
-    # Run application service
-    g.my_app.run(initial_events=[{"command": "import-images-from-csv"}])
+    data = {}
+    state = {}
+
+    init_ui.init_context(data, g.TEAM_ID, g.WORKSPACE_ID)
+    init_ui.init_table_preview(data, state)
+    init_ui.init_options(data, state)
+    init_ui.init_progress(data, state)
+
+    g.my_app.compile_template(g.root_source_dir)
+    g.my_app.run(data=data, state=state, initial_events=[{"command": "preview"}])
 
 
 if __name__ == "__main__":
