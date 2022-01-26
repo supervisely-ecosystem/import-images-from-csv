@@ -1,15 +1,16 @@
 import os
-import csv
 import globals as g
 import supervisely as sly
 from PIL import Image
-from supervisely.io.fs import download
+from supervisely.io.fs import download, get_file_name_with_ext
 
 
 def check_column_names(col_names_validate):
-    if not any(image_url_name in g.possible_image_url_col_names for image_url_name in col_names_validate):
-        raise Exception("IMAGE URL COLUMN NAME IS INVALID, PLEASE USE ONE OF:\n"
-                        f"{g.possible_image_url_col_names}")
+    if not any(image_url_name in g.possible_image_url_col_names for image_url_name in col_names_validate) and not any(
+            image_path_name in g.possible_image_path_col_names for image_path_name in col_names_validate):
+        raise Exception("IMAGE COLUMN NAME IS INVALID, PLEASE USE ONE OF:\n"
+                        f"{g.possible_image_url_col_names} FOR URL AND "
+                        f"{g.possible_image_path_col_names} FOR PATH")
     if not any(tag_name in g.possible_tag_col_names for tag_name in col_names_validate):
         raise Exception("TAG COLUMN NAME IS INVALID, PLEASE USE ONE OF:\n"
                         f"{g.possible_tag_col_names}")
@@ -21,15 +22,18 @@ def validate_csv_table(first_csv_row):
 
     check_column_names(col_names_validate)
 
-    image_url_col_name = None
+    image_col_name = None
     tag_col_name = None
     for name in col_names:
-        if name.lower().startswith("image") and name.lower().endswith("url"):
-            image_url_col_name = name
+        if name.lower().startswith("url"):
+            image_col_name = name
+        if name.lower().startswith("path"):
+            image_col_name = name
+            g.is_path = True
         if name.lower().startswith("tag"):
             tag_col_name = name
 
-    return image_url_col_name, tag_col_name
+    return image_col_name, tag_col_name
 
 
 def download_file_from_link(link, save_path, file_name, app_logger):
@@ -55,6 +59,15 @@ def process_image_by_url(image_url, app_logger):
     success = os.path.isfile(image_path)
 
     return success, image_name, image_path
+
+
+def process_image_by_path(image_path):
+    image_path = os.path.abspath(os.path.join(g.remote_csv_dir_path, image_path.lstrip("/")))
+    image_name = get_file_name_with_ext(image_path)
+    save_path = os.path.join(g.img_dir, image_name)
+    g.api.file.download(g.TEAM_ID, image_path, save_path)
+    success = os.path.isfile(save_path)
+    return success, image_name, save_path
 
 
 def flat_tag_list(unique_tags):

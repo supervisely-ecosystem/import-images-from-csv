@@ -15,7 +15,7 @@ def preview(api: sly.Api, task_id, context, state, app_logger):
 @g.my_app.callback("process")
 @sly.timeit
 def process(api: sly.Api, task_id, context, state, app_logger):
-    process_images_from_csv(api, state, g.image_url_col_name, g.tag_col_name, app_logger)
+    process_images_from_csv(api, state, g.image_col_name, g.tag_col_name, app_logger)
 
 
 def main():

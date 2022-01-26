@@ -4,7 +4,7 @@ import functions as f
 import supervisely as sly
 
 
-def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_logger):
+def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger):
     project = None
     project_meta = None
     ds_images_names = None
@@ -37,11 +37,15 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
         image_names = []
         anns = []
         for row in batch:
-            if len(row[image_url_col_name]) == 0:
+            if len(row[image_col_name]) == 0:
                 csv_images_len -= 1
                 progress_items_cb(1)
                 continue
-            success, image_name, image_path = f.process_image_by_url(row[image_url_col_name], app_logger)
+
+            if g.is_path is False:
+                success, image_name, image_path = f.process_image_by_url(row[image_col_name], app_logger)
+            else:
+                success, image_name, image_path = f.process_image_by_path(row[image_col_name])
 
             if success is False or image_name is None:
                 csv_images_len -= 1

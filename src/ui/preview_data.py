@@ -11,15 +11,15 @@ def download_and_preview_table(api, task_id, context, state, app_logger):
         reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
         reader = [row for row in reader]
         g.csv_reader = reader
-        g.image_url_col_name, g.tag_col_name = f.validate_csv_table(reader[0])
+        g.image_col_name, g.tag_col_name = f.validate_csv_table(reader[0])
 
-        csv_table["columns"] = ["row", g.image_url_col_name, g.tag_col_name]
+        csv_table["columns"] = ["row", g.image_col_name, g.tag_col_name]
         for idx, row in enumerate(reader):
-            csv_table["data"].append([idx + 1, row[g.image_url_col_name], row[g.tag_col_name]])
+            csv_table["data"].append([idx + 1, row[g.image_col_name], row[g.tag_col_name]])
 
         # stats
 
-        all_images = [row[g.image_url_col_name] for row in reader]
+        all_images = [row[g.image_col_name] for row in reader]
         unique_images = list(set(all_images))
         unique_tags = f.flat_tag_list(list(set([row[g.tag_col_name] for row in reader])))
         duplicate_images = len(all_images) - len(unique_images)

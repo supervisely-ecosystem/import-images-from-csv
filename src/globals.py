@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 import supervisely as sly
-from supervisely.io.fs import mkdir, get_file_name
+from supervisely.io.fs import mkdir
 
 
 my_app = sly.AppService()
@@ -18,20 +18,22 @@ TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
 INPUT_FILE = os.environ["modal.state.slyFile"]
 
-project_name = get_file_name(INPUT_FILE)
 
 storage_dir = my_app.data_dir
-local_csv_path = os.path.join(storage_dir, "catalog.csv")
+local_csv_path = os.path.join(storage_dir, "images.csv")
+remote_csv_dir_path = os.path.dirname(INPUT_FILE)
 
 DEFAULT_DELIMITER = ','
 TAGS_DELIMITER = ';'
 
-possible_image_url_col_names = ["image url", "image-url", "image_url", "imageurl"]
+possible_image_url_col_names = ["url", "urls"]
+possible_image_path_col_names = ["path", "paths"]
 possible_tag_col_names = ["tag", "tags"]
 
-image_url_col_name = None
+image_col_name = None
 tag_col_name = None
 csv_reader = None
+is_path = False
 
 img_dir = os.path.join(storage_dir, "img_dir")
 mkdir(img_dir)
