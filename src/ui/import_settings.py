@@ -31,7 +31,7 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
         sly.logger.error("Result dataset is None (not found or not created)")
         return
 
-    progress_items_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, "processing CSV", csv_images_len)
+    progress_items_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, "Processing CSV", csv_images_len)
     for batch in sly.batched(g.csv_reader):
         image_paths = []
         image_names = []
@@ -45,17 +45,20 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
             if success is False or image_name is None:
                 csv_images_len -= 1
                 app_logger.warn(f"Can't download {image_name}")
+                progress_items_cb(1)
                 continue
 
             if state["dstDatasetMode"] == "existingDataset":
                 if image_name in ds_images_names:
                     csv_images_len -= 1
                     app_logger.warn(f"{image_name} already exists in dataset: {dataset.name}")
+                    progress_items_cb(1)
                     continue
 
             if image_name in image_names:
                 csv_images_len -= 1
                 app_logger.warn(f"Duplicate {image_name} in csv file")
+                progress_items_cb(1)
                 continue
 
             ann, project_meta = f.process_ann(row, project_meta, image_path, tag_col_name, state["needTag"])
@@ -63,16 +66,14 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
             image_paths.append(image_path)
             image_names.append(image_name)
             anns.append(ann)
+            progress_items_cb(1)
 
         api.project.update_meta(project.id, project_meta.to_json())
         images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)
         images_ids = [image_info.id for image_info in images_infos]
         api.annotation.upload_anns(images_ids, anns)
-        progress_items_cb(len(batch))
 
     init_ui.reset_progress(api, g.TASK_ID, 1)
-    init_ui.reset_progress(api, g.TASK_ID, 2)
-
     if csv_images_len == 1:
         g.my_app.show_modal_window(
             f"{csv_images_len} image has been successfully imported to the project \"{project.name}\""

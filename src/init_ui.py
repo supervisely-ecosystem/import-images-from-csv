@@ -36,11 +36,11 @@ def init_options(data, state):
 
 
 def init_progress(data, state):
-    data["progressName"] = None
-    data["currentProgressLabel"] = 0
-    data["totalProgressLabel"] = 0
-    data["currentProgress"] = 0
-    data["totalProgress"] = 0
+    data["progressName1"] = None
+    data["currentProgressLabel1"] = 0
+    data["totalProgressLabel1"] = 0
+    data["currentProgress1"] = 0
+    data["totalProgress1"] = 0
 
 
 def reset_progress(api, task_id, index):
