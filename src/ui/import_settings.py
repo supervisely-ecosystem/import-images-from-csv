@@ -39,6 +39,7 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
         for row in batch:
             if len(row[image_url_col_name]) == 0:
                 csv_images_len -= 1
+                progress_items_cb(1)
                 continue
             success, image_name, image_path = f.process_image_by_url(row[image_url_col_name], app_logger)
 
