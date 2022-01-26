@@ -4,14 +4,12 @@
         color: black;
         }
     </sly-style>
-    <sly-stepper :active="state.activeStep">
-        <sly-stepper-item>
-            {% include 'src/ui/preview_data.html' %}
-        </sly-stepper-item>
-        <sly-stepper-item>
-            {% include 'src/ui/import_settings.html' %}
-        </sly-stepper-item>
-    </sly-stepper>
+    <div>
+        {% include 'src/ui/preview_data.html' %}
+    </div>
+    <div>
+        {% include 'src/ui/import_settings.html' %}
+    </div>
 </div>
 
 <pre>

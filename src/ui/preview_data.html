@@ -1,5 +1,11 @@
 <sly-card class="mt10"
-          title="1. Preview CSV file">
+          :title="`1. Preview CSV file: ${state.fileName}`">
     <sly-table :content="data.table">
     </sly-table>
+    <div>
+        <p><strong>CSV File stats:</strong></p>
+        <p>• Unique Images: {{ state.uniqueImagesLen }}</p>
+        <p>• Duplicate Images: {{ state.duplicateImagesLen }}</p>
+        <p>• Unique Tags: {{ state.uniqueTagsLen }}</p>
+    </div>
 </sly-card>

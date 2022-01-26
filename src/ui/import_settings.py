@@ -38,6 +38,7 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
         anns = []
         for row in batch:
             if len(row[image_url_col_name]) == 0:
+                csv_images_len -= 1
                 continue
             success, image_name, image_path = f.process_image_by_url(row[image_url_col_name], app_logger)
 
@@ -71,8 +72,15 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
 
     init_ui.reset_progress(api, g.TASK_ID, 1)
     init_ui.reset_progress(api, g.TASK_ID, 2)
-    g.my_app.show_modal_window(
-        f"{csv_images_len} images has been successfully imported to the project \"{project.name}\""
-        f", dataset \"{dataset.name}\". You can continue importing images to the same or new "
-        f"project. If you've finished with the app, stop it manually.")
+
+    if csv_images_len == 1:
+        g.my_app.show_modal_window(
+            f"{csv_images_len} image has been successfully imported to the project \"{project.name}\""
+            f", dataset \"{dataset.name}\". You can continue importing images to the same or new "
+            f"project. If you've finished with the app, stop it manually.")
+    else:
+        g.my_app.show_modal_window(
+            f"{csv_images_len} images has been successfully imported to the project \"{project.name}\""
+            f", dataset \"{dataset.name}\". You can continue importing images to the same or new "
+            f"project. If you've finished with the app, stop it manually.")
     api.app.set_field(g.TASK_ID, "data.processing", False)

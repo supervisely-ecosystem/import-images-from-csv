@@ -1,6 +1,7 @@
 import globals as g
 import supervisely as sly
 from functools import partial
+from supervisely.io.fs import get_file_name_with_ext
 
 
 def init_context(data, team_id, workspace_id):
@@ -10,6 +11,12 @@ def init_context(data, team_id, workspace_id):
 
 def init_table_preview(data, state):
     state["filePath"] = g.INPUT_FILE
+    state["fileName"] = get_file_name_with_ext(g.INPUT_FILE)
+
+    state["uniqueImagesLen"] = None
+    state["duplicateImagesLen"] = None
+    state["uniqueTagsLen"] = None
+
     data["table"] = ""
     data["connecting"] = False
 
