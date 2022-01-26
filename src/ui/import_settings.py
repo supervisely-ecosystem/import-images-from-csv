@@ -11,8 +11,10 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
     if state["dstProjectMode"] == "newProject":
         project = api.project.create(g.WORKSPACE_ID, state["dstProjectName"], sly.ProjectType.IMAGES,
                                      change_name_if_conflict=True)
+        project_meta = sly.ProjectMeta()
     elif state["dstProjectMode"] == "existingProject":
         project = api.project.get_info_by_id(state["dstProjectId"])
+        project_meta = api.project.get_meta(project.id)
     if project is None:
         sly.logger.error("Result project is None (not found or not created)")
         return
@@ -22,14 +24,12 @@ def process_images_from_csv(api, state, image_url_col_name, tag_col_name, app_lo
         dataset = api.dataset.create(project.id, state["dstDatasetName"], change_name_if_conflict=True)
     elif state["dstDatasetMode"] == "existingDataset":
         dataset = api.dataset.get_info_by_name(project.id, state["selectedDatasetName"])
-        ds_images = g.api.image.get_list(dataset.id)
-        ds_images_names = [img.name for img in ds_images]
+        ds_images_names = [img.name for img in api.image.get_list(dataset.id)]
 
     if dataset is None:
         sly.logger.error("Result dataset is None (not found or not created)")
         return
 
-    project_meta = sly.ProjectMeta()
     progress_items_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, "processing CSV", csv_images_len)
     for batch in sly.batched(g.csv_reader):
         image_paths = []

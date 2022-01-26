@@ -61,13 +61,13 @@ def process_ann(csv_row, project_meta, image_path, tag_col_name):
     tag_name = csv_row[tag_col_name].strip()
     image_shape = get_image_size(image_path)
 
-    image_tag_meta = sly.TagMeta(tag_name, sly.TagValueType.NONE)
-    try:
+    tag_meta = project_meta.get_tag_meta(tag_name)
+    if tag_meta is None:
+        image_tag_meta = sly.TagMeta(tag_name, sly.TagValueType.NONE)
         project_meta = project_meta.add_tag_meta(image_tag_meta)
-    except:
-        pass
-
-    tag_col = sly.TagCollection([sly.Tag(image_tag_meta)])
+        tag_col = sly.TagCollection([sly.Tag(image_tag_meta)])
+    else:
+        tag_col = sly.TagCollection([sly.Tag(tag_meta)])
 
     ann = sly.Annotation((image_shape[0], image_shape[1]), img_tags=tag_col)
     return ann, project_meta
