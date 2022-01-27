@@ -71,12 +71,13 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
             image_paths.append(image_path)
             image_names.append(image_name)
             anns.append(ann)
-            progress_items_cb(1)
+            # progress_items_cb(1)  # for debug
 
         api.project.update_meta(project.id, project_meta.to_json())
         images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)
         images_ids = [image_info.id for image_info in images_infos]
         api.annotation.upload_anns(images_ids, anns)
+        progress_items_cb(len(batch))
 
     init_ui.reset_progress(api, g.TASK_ID, 1)
     if csv_images_len == 1:
@@ -89,4 +90,14 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
             f"{csv_images_len} images has been successfully imported to the project \"{project.name}\""
             f", dataset \"{dataset.name}\". You can continue importing images to the same or new "
             f"project. If you've finished with the app, stop it manually.")
-    api.app.set_field(g.TASK_ID, "data.processing", False)
+
+    project_info = api.project.get_info_by_id(project.id)
+    fields = [
+        {"field": "data.processing", "payload": False},
+        {"field": "data.started", "payload": False},
+        {"field": "data.finished", "payload": True},
+        {"field": "data.resultProject", "payload": project.name},
+        {"field": "data.resultProjectId", "payload": project.id},
+        {"field": "data.resultProjectPreviewUrl", "payload": g.api.image.preview_url(project_info.reference_image_url, 100, 100)}
+    ]
+    g.api.task.set_fields(g.TASK_ID, fields)
