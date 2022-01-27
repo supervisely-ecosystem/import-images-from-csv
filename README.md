@@ -42,6 +42,13 @@ Application key points:
 
 <img src="https://i.imgur.com/6Ej5E8C.png" width="100%"/>
 
+3. Wait until the app is started, press `Open` button in `Workspace tasks`
+
+<img src="https://i.imgur.com/FDMhaqu.png" width="100%"/>
+
+# How to Use
+
+<img src="https://i.imgur.com/XaIFXen.png" width="100%"/>
 
 # Demo Data
 
