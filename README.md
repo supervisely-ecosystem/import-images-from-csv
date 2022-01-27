@@ -31,6 +31,7 @@ Application key points:
 - `.CSV` delimeter is **comma**
 - delimeter for multiple **tags** is **semicolon**
 - Each images from the catalog will be tagged with appropriate tags
+- If you want to import images by **paths**, you must use relative paths to images from `.CSV` file
 
 
 # How to Run
