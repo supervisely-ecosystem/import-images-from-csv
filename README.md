@@ -23,7 +23,7 @@
 
 # Overview
 
-Application converts **.CSV file** [**(example)**](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/test_snacks_catalog.csv) to Supervisely Images Project
+Application converts **.CSV file** [**(example)**](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/demo_files.zip) to Supervisely Images Project
 
 Application key points:  
 - `.CSV` required field: **urls** or **paths** (hard-coded field name)
@@ -50,7 +50,3 @@ Application key points:
 # How to Use
 
 <img src="https://i.imgur.com/XaIFXen.png" width="100%"/>
-
-# Demo Data
-
-- [.CSV table to import example](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/test_snacks_catalog.csv) — table example
