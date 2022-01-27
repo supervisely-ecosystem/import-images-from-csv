@@ -4,11 +4,11 @@
   "categories": [
     "import"
   ],
-  "description": "Create images project from csv file with images and tags",
+  "description": "Create images project from csv file with images URL links or Team Files paths",
   "docker_image": "supervisely/base-py-sdk:6.6.0",
   "main_script": "src/main.py",
   "task_location": "workspace_tasks",
-  "icon": "https://i.imgur.com/D8ffaAT.png",
+  "icon": "https://i.imgur.com/5mmHzlK.png",
   "icon_cover": false,
   "icon_background": "#FFFFFF",
   "context_menu": {
