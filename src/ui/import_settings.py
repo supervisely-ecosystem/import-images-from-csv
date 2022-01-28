@@ -40,6 +40,16 @@ def download_file_from_link(link, save_path, file_name, app_logger):
         sly.logger.warn(e)
 
 
+def download_csv_dir(api):
+    csv_dir_name = os.path.dirname(g.INPUT_FILE.lstrip('/').rstrip('/'))
+    save_dir = os.path.join(os.path.dirname(g.local_csv_path), csv_dir_name)
+    remote_csv_dir = os.path.dirname(g.INPUT_FILE) + "/"
+
+    progress_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, f"Downloading CSV Root Directory {csv_dir_name}", g.csv_dir_size, is_size=True)
+    api.file.download_directory(g.TEAM_ID, remote_csv_dir, save_dir, progress_cb)
+    init_ui.reset_progress(api, g.TASK_ID, 1)
+
+
 def process_image_by_url(image_url, image_names, ds_images_names, dataset, app_logger):
     image_url = image_url.strip()
     image_name = os.path.basename(os.path.normpath(image_url)) + ".png"
@@ -62,6 +72,15 @@ def process_image_by_path(image_path, image_names, ds_images_names, dataset, app
     return image_name, save_path
 
 
+def process_image_by_local_path(image_path, image_names, ds_images_names, dataset, app_logger):
+    csv_dir_name = os.path.dirname(g.INPUT_FILE)
+    image_path = g.storage_dir + csv_dir_name + image_path
+    image_name = get_file_name_with_ext(image_path)
+    if os.path.isfile(image_path):
+        image_name = validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger)
+    return image_name, image_path
+
+
 def validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger):
     if image_name in ds_images_names:
         new_image_name = generate_free_name(ds_images_names, image_name, True)
@@ -73,6 +92,7 @@ def validate_image_name(image_name, image_names, ds_images_names, dataset, app_l
         new_image_name = generate_free_name(image_names, image_name, True)
         app_logger.warn(f"Duplicate {image_name} in csv file, it will be renamed to: {new_image_name}")
         return new_image_name
+    return image_name
 
 
 def process_ann(csv_row, image_path, tag_col_name):
@@ -121,9 +141,14 @@ def show_output_message(api, csv_images_len, project, dataset_name):
 
 def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger):
     csv_counter = len(g.csv_reader)
+    is_beyond_threshold = False
     project, dataset = create_project(api, state)
-
     ds_images_names = set([img.name for img in api.image.get_list(dataset.id)])
+
+    if g.threshold > g.THRESHOLD_SIZE_LIMIT:
+        download_csv_dir(api)
+        is_beyond_threshold = True
+
     progress_items_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, "Processing CSV", csv_counter)
     for batch in sly.batched(g.csv_reader):
         image_paths = []
@@ -135,8 +160,11 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
                 if g.is_path is False:
                     image_name, image_path = process_image_by_url(row[image_col_name], image_names, ds_images_names,
                                                                   dataset, app_logger)
-                else:
+                elif is_beyond_threshold is False:
                     image_name, image_path = process_image_by_path(row[image_col_name], image_names, ds_images_names,
+                                                                   dataset, app_logger)
+                elif is_beyond_threshold is True:
+                    image_name, image_path = process_image_by_local_path(row[image_col_name], image_names, ds_images_names,
                                                                    dataset, app_logger)
             except Exception:
                 app_logger.warn(f"Couldn't process: {row[image_col_name]}, item will be skipped")

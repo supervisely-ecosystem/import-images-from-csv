@@ -1,3 +1,5 @@
+import os
+
 import globals as g
 import supervisely as sly
 import init_ui
@@ -6,10 +8,21 @@ from ui.preview_data import download_and_preview_table
 from ui.import_settings import process_images_from_csv
 
 
+def calculate_threshold(api, csv_path, image_paths):
+    csv_dir = os.path.dirname(csv_path)
+    images_size = 0
+    for image_path in image_paths:
+        images_size += api.file.get_info_by_path(g.TEAM_ID, image_path).sizeb
+    g.csv_dir_size = api.file.get_directory_size(g.TEAM_ID, csv_dir)
+    threshold = round((images_size * 100) / g.csv_dir_size)
+    return threshold
+
+
 @g.my_app.callback("preview")
 @sly.timeit
 def preview(api: sly.Api, task_id, context, state, app_logger):
-    download_and_preview_table(api, task_id, context, state, app_logger)
+    images_paths = download_and_preview_table(api, task_id, context, state, app_logger)
+    g.threshold = calculate_threshold(api, g.INPUT_FILE, images_paths)
 
 
 @g.my_app.callback("process")

@@ -3,9 +3,9 @@ import globals as g
 import supervisely as sly
 
 
-def create_project_meta_from_csv_tags(unique_tags):
+def create_project_meta_from_csv_tags(total_tags):
     tag_metas = []
-    for tag_name in unique_tags:
+    for tag_name in total_tags:
         tag_meta = sly.TagMeta(tag_name, sly.TagValueType.NONE)
         tag_metas.append(tag_meta)
     tag_meta_col = sly.TagMetaCollection(tag_metas)
@@ -13,22 +13,22 @@ def create_project_meta_from_csv_tags(unique_tags):
     return project_meta
 
 
-def flat_tag_list(unique_tags):
+def flat_tag_list(total_tags):
     tags = []
-    for tag in unique_tags:
+    for tag in total_tags:
         if g.TAGS_DELIMITER in tag:
             tag = tag.split(g.TAGS_DELIMITER)
         else:
             tag = tag.split()
         tags.append(tag)
 
-    unique_tags = []
+    total_tags = []
     for sublist in tags:
         for tag in sublist:
-            unique_tags.append(tag)
+            total_tags.append(tag)
 
-    unique_tags = list(set(unique_tags))
-    return unique_tags
+    total_tags = list(set(total_tags))
+    return total_tags
 
 
 def check_column_names(col_names_validate):
@@ -85,24 +85,23 @@ def download_and_preview_table(api, task_id, context, state, app_logger):
                 csv_table["data"].append([idx + 1, row[g.image_col_name]])
 
         # stats
-        all_images = [row[g.image_col_name] for row in reader]
-        unique_images = list(set(all_images))
+        images_paths = [row[g.image_col_name] for row in reader]
         if g.tag_col_name is not None:
-            unique_tags = flat_tag_list(list(set([row[g.tag_col_name] for row in reader])))
-            g.project_meta = create_project_meta_from_csv_tags(unique_tags)
-            unique_tags = len(unique_tags)
+            total_tags = flat_tag_list(list(set([row[g.tag_col_name] for row in reader])))
+            g.project_meta = create_project_meta_from_csv_tags(total_tags)
+            total_tags = len(total_tags)
         else:
-            unique_tags = 0
+            total_tags = 0
             need_tag = "ignore"
 
-        duplicate_images = len(all_images) - len(unique_images)
 
     fields = [
         {"field": "data.table", "payload": csv_table},
         {"field": "data.connecting", "payload": False},
-        {"field": "state.uniqueImagesLen", "payload": len(unique_images)},
-        {"field": "state.duplicateImagesLen", "payload": duplicate_images},
-        {"field": "state.uniqueTagsLen", "payload": unique_tags},
+        {"field": "state.totalImagesLen", "payload": len(images_paths)},
+        {"field": "state.totalTagsLen", "payload": total_tags},
         {"field": "state.needTag", "payload": need_tag},
     ]
     api.task.set_fields(task_id, fields)
+
+    return images_paths

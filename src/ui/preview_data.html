@@ -3,8 +3,7 @@
     <sly-table :content="data.table" :options="{perPage: 20, pageSizes: [10, 20, 30, 50, 100]}"/>
         <div>
             <p><strong>CSV File stats:</strong></p>
-            <p>• Unique Images: {{ state.uniqueImagesLen }}</p>
-            <p>• Duplicate Images: {{ state.duplicateImagesLen }}</p>
-            <p v-if="state.uniqueTagsLen > 0">• Unique Tags: {{ state.uniqueTagsLen }}</p>
+            <p>• Total Images: {{ state.totalImagesLen }}</p>
+            <p v-if="state.totalTagsLen > 0">• Total Tags: {{ state.totalTagsLen }}</p>
         </div>
 </sly-card>

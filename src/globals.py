@@ -16,6 +16,7 @@ TASK_ID = int(os.environ["TASK_ID"])
 TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
 INPUT_FILE = os.environ["modal.state.slyFile"]
+THRESHOLD_SIZE_LIMIT = 80
 
 storage_dir = my_app.data_dir
 local_csv_path = os.path.join(storage_dir, "images.csv")
@@ -33,6 +34,8 @@ tag_col_name = None
 csv_reader = None
 is_path = False
 project_meta = None
+threshold = None
+csv_dir_size = None
 
 img_dir = os.path.join(storage_dir, "img_dir")
 mkdir(img_dir, True)

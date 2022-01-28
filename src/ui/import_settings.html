@@ -3,7 +3,7 @@
           subtitle="Configure destination project and dataset">
 
 
-    <sly-field title="Assign tags from csv table" v-show="state.uniqueTagsLen > 0">
+    <sly-field title="Assign tags from csv table" v-show="state.totalTagsLen > 0">
         <el-select v-model="state.needTag" placeholder="Select dataset year">
             <el-option key="add" label="Add Tags" value="add"></el-option>
             <el-option key="ignore" label="Ignore Tags" value="ignore"></el-option>
