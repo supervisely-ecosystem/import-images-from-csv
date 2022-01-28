@@ -7,8 +7,9 @@
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#How-To-Run">How To Run</a> •
-  <a href="#Screenshot">Screenshot</a> •
-  <a href="#Demo">Demo</a>
+  <a href="#Demo">Demo</a> •
+  <a href="#Screenshot">Usage</a> 
+  
 </p>
 
 [![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/import-images-from-csv)
@@ -46,7 +47,14 @@ Application key points:
 
 <img src="https://i.imgur.com/FDMhaqu.png" width="100%"/>
 
-# Screenshot
+
+# Demo
+<a data-key="sly-embeded-video-link" href="https://youtu.be/TrRd1sfT-q4" data-video-code="TrRd1sfT-q4">
+    <img src="https://i.imgur.com/Fg3pecP.png" alt="SLY_EMBEDED_VIDEO_LINK"  width="70%">
+</a>
+
+
+# Usage
 
 1. **Preview CSV file** section contains all information about csv file and some of it's stats
 2. **Import settings** section is configurable. You can configure destination project, dataset, and choose whether you want to assign or ignore tags. Assign/ignore option only available if there are tags in the `.CSV` file.
@@ -54,8 +62,3 @@ Application key points:
 4. When you have finished working with the application, **stop it manually**
 
 <img src="https://i.imgur.com/XaIFXen.png" width="100%"/>
-
-# Demo
-<a data-key="sly-embeded-video-link" href="https://youtu.be/TrRd1sfT-q4" data-video-code="TrRd1sfT-q4">
-    <img src="https://i.imgur.com/Fg3pecP.png" alt="SLY_EMBEDED_VIDEO_LINK"  width="70%">
-</a>
