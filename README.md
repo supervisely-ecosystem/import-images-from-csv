@@ -8,7 +8,7 @@
   <a href="#Overview">Overview</a> •
   <a href="#How-To-Run">How To Run</a> •
   <a href="#Demo">Demo</a> •
-  <a href="#Screenshot">Usage</a> 
+  <a href="#Usage">Usage</a> 
   
 </p>
 
