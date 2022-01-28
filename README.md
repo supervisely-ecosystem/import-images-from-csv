@@ -7,8 +7,8 @@
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#How-To-Run">How To Run</a> •
-  <a href="#How-To-Use">How To Use</a> •
-  <a href="#Demo-Video">Demo Video</a>
+  <a href="#Screenshot">Screenshot</a> •
+  <a href="#Demo">Demo</a>
 </p>
 
 [![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/import-images-from-csv)
@@ -28,7 +28,7 @@ Application key points:
 - `.CSV` required field: **urls** or **paths** (hard-coded field name)
 - `.CSV` optional field: **tags** (hard-coded field name)
 - `.CSV` delimeter is **comma**
-- delimeter for multiple **tags** is **semicolon**
+- Delimeter for multiple **tags** is **semicolon**
 - Each images from the catalog will be tagged with appropriate tags
 - If you want to import images by **paths**, you must use relative paths to images from `.CSV` file
 
@@ -46,7 +46,7 @@ Application key points:
 
 <img src="https://i.imgur.com/FDMhaqu.png" width="100%"/>
 
-# How to Use
+# Screenshot
 
 1. **Preview CSV file** section contains all information about csv file and some of it's stats
 2. **Import settings** section is configurable. You can configure destination project, dataset, and choose whether you want to assign or ignore tags. Assign/ignore option only available if there are tags in the `.CSV` file.
@@ -55,7 +55,7 @@ Application key points:
 
 <img src="https://i.imgur.com/XaIFXen.png" width="100%"/>
 
-# Demo Video
+# Demo
 <a data-key="sly-embeded-video-link" href="https://youtu.be/TrRd1sfT-q4" data-video-code="TrRd1sfT-q4">
     <img src="https://i.imgur.com/Fg3pecP.png" alt="SLY_EMBEDED_VIDEO_LINK"  width="70%">
 </a>
