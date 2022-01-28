@@ -26,12 +26,12 @@
 Application converts **.CSV file** [**(example)**](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/demo_files.zip) to Supervisely Images Project
 
 Application key points:  
-- `.CSV` required field: **urls** or **paths** (hard-coded field name)
-- `.CSV` optional field: **tags** (hard-coded field name)
-- `.CSV` delimeter is **comma**
-- Delimeter for multiple **tags** is **semicolon**
-- Each images from the catalog will be tagged with appropriate tags
-- If you want to import images by **paths**, you must use relative paths to images from `.CSV` file
+- `.CSV` required column: **url** or **path** (hard-coded column name)
+- `.CSV` optional column: **tag** (hard-coded column name)
+- `.CSV` delimiter is **comma**
+- Delimiter for multiple **tag** is **semicolon**
+- Each images from the catalog will be tagged with corresponding tags
+- If you want to import images by **path**, you must use relative paths to images from `.CSV` file
 
 
 # How to Run
