@@ -1,7 +1,6 @@
 import csv
 import globals as g
 import supervisely as sly
-from supervisely.io.fs import silent_remove
 
 
 def create_project_meta_from_csv_tags(total_tags):

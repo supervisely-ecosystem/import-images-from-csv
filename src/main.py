@@ -11,7 +11,10 @@ def calculate_images_size_threshold(api, csv_path, image_paths):
     csv_dir = os.path.dirname(csv_path)
     images_size = 0
     for image_path in image_paths:
-        images_size += api.file.get_info_by_path(g.TEAM_ID, image_path).sizeb
+        try:
+            images_size += api.file.get_info_by_path(g.TEAM_ID, image_path).sizeb
+        except Exception:
+            continue
     g.csv_dir_size = api.file.get_directory_size(g.TEAM_ID, csv_dir)
     images_size_threshold = round((images_size * 100) / g.csv_dir_size)
     return images_size_threshold

@@ -140,9 +140,7 @@ def process_ann(csv_row, image_path, tag_col_name):
 
     tag_metas = []
     tag_names = csv_row[tag_col_name].strip()
-    if g.TAGS_DELIMITER in tag_names:
-        tag_names = tag_names.split(g.TAGS_DELIMITER)
-
+    tag_names = tag_names.split(g.TAGS_DELIMITER)
     for tag_name in tag_names:
         tag_name.strip()
         tag_meta = g.project_meta.get_tag_meta(tag_name)
