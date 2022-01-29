@@ -1,5 +1,4 @@
 import os
-
 import globals as g
 import supervisely as sly
 import init_ui
@@ -21,8 +20,9 @@ def calculate_threshold(api, csv_path, image_paths):
 @g.my_app.callback("preview")
 @sly.timeit
 def preview(api: sly.Api, task_id, context, state, app_logger):
-    images_paths = download_and_preview_table(api, task_id, context, state, app_logger)
-    g.threshold = calculate_threshold(api, g.INPUT_FILE, images_paths)
+    images_paths = download_and_preview_table(api, task_id)
+    if g.is_url is False:
+        g.threshold = calculate_threshold(api, g.INPUT_FILE, images_paths)
 
 
 @g.my_app.callback("process")
