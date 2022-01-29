@@ -23,7 +23,7 @@
 
 # Overview
 
-Application converts **.CSV file** [**(example)**](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/demo_files.zip) to Supervisely Images Project
+Application converts **.CSV file** to Supervisely Images Project
 
 Application key points:  
 - `.CSV` file have to contain one of the following columns: **url** or **path**. If column **url** is defined then app will download image by url and upload it to project. If column **path** is defined then app will treat it as a relative path with respect to `.CSV` file location, get image from Team Files and add it to project. Both **url** and **path** columns can not be defined at the same time, use only one of them.
@@ -43,6 +43,8 @@ Application key points:
 
 **Path to CSV file**: any location
   
+[download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/URL.Example.zip)
+  
 ```text
 url,tag
 https://images.io/image_example_1.png,tag1;tag2
@@ -51,7 +53,6 @@ https://images.io/image_example_3.png,
 https://images.io/image_example_4.png,big tag with spaces;tag4
 https://images.io/image_example_5.png,tag1;tag3
 ```
- 
 </details>
   
 ## 2. Images from Paths
@@ -64,6 +65,8 @@ https://images.io/image_example_5.png,tag1;tag3
   <summary>CSV file example</summary>
 
 **Path to CSV file**: /images.csv
+  
+[download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.1.zip)
   
 ```text
 path,tag
@@ -98,6 +101,8 @@ path,tag
 
 **Path to CSV file**: /demo-images-from-csv/images.csv
   
+[download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.2.zip)
+  
 ```text
 path,tag
 /img_01.jpeg,dog
@@ -131,6 +136,8 @@ path,tag
   <summary>CSV file example</summary>
 
 **Path to CSV file**: /demo-images-from-csv/images.csv
+  
+[download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.3.zip)
   
 ```text
 path,tag
