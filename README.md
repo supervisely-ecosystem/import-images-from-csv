@@ -30,6 +30,7 @@ Application key points:
 - `.CSV` file may contain optional column **tag**. If this column is defined, corresponding tags will be added to the image during import. Delimiter in **tags** column is **`;`** (**semicolon**)
 - `.CSV` columns delimiter is **`,`** (**comma**)
 - If you want to import images by **paths**, you must use relative paths to images from `.CSV` file
+- `.CSV` file can't access files that are one or more levels above it's location
 
 # Prepare Data in Team Files
 
