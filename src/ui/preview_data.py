@@ -16,16 +16,21 @@ def create_project_meta_from_csv_tags(total_tags):
 def flat_tag_list(total_tags):
     tags = []
     for tag in total_tags:
-        if g.TAGS_DELIMITER in tag:
-            tag = tag.split(g.TAGS_DELIMITER)
+        if tag is None or tag == '':
+            continue
         else:
-            tag = tag.split()
-        tags.append(tag)
+            if g.TAGS_DELIMITER in tag:
+                tag = tag.split(g.TAGS_DELIMITER)
+            tags.append(tag)
 
     total_tags = []
     for sublist in tags:
-        for tag in sublist:
-            total_tags.append(tag)
+        if type(sublist) == str:
+            total_tags.append(sublist)
+        else:
+            for tag in sublist:
+                if tag != '':
+                    total_tags.append(tag)
 
     total_tags = list(set(total_tags))
     return total_tags
