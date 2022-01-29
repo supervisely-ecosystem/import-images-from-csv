@@ -37,5 +37,5 @@ tag_col_name = None
 csv_reader = None
 is_url = False
 project_meta = None
-threshold = None
+images_size_threshold = None
 csv_dir_size = None

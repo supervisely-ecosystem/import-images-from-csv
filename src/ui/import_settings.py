@@ -183,7 +183,7 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
     project, dataset = create_project(api, state)
     ds_images_names = set([img.name for img in api.image.get_list(dataset.id)])
 
-    if g.is_url is False and g.threshold >= g.THRESHOLD_SIZE_LIMIT :
+    if g.is_url is False and g.images_size_threshold >= g.THRESHOLD_SIZE_LIMIT:
         download_csv_dir(api)
         is_beyond_threshold = True
 
