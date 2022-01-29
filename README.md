@@ -51,6 +51,7 @@ https://images.io/image_example_3.png,
 https://images.io/image_example_4.png,big tag with spaces;tag4
 https://images.io/image_example_5.png,tag1;tag3
 ```
+ 
 </details>
   
 ## 2. Images from Paths
@@ -73,6 +74,21 @@ path,tag
 /horses/img_01.jpeg,horse
 /horses/img_02.jpeg,horse
 ```
+  
+**Tree**:
+```text
+.
+├── images.csv                                      
+├── dogs                    
+│ ├── img_01.jpeg
+│ └── img_02.jpeg
+├── cats
+│ ├── img_01.jpeg
+│ └── img_02.jpeg
+└── horses
+  ├── img_01.jpeg
+  └── img_02.jpeg
+```
 </details>
   
 ### Example 2: CSV file in subdirectory and images on the same level:
@@ -91,6 +107,22 @@ path,tag
 /img_05.jpeg,horse
 /img_06.jpeg,horse
 ```
+
+**Tree**:
+```text
+.
+├── some_file_in_root_directory_1.json
+├── some_file_in_root_directory_2.json
+├── some_file_in_root_directory_3.json
+└── demo-images-from-csv
+    ├── images.csv
+    ├── img_01.jpeg
+    ├── img_02.jpeg
+    ├── img_03.jpeg
+    ├── img_04.jpeg
+    ├── img_05.jpeg
+    └── img_06.jpeg       
+```
 </details>
 
 ### Example 3: CSV file in subdirectory and images subdirectories:
@@ -108,6 +140,24 @@ path,tag
 /cats/img_02.jpeg,cat
 /horses/img_01.jpeg,horse
 /horses/img_02.jpeg,horse
+```
+
+**Tree**:
+```text
+.
+├── some_file_in_root_directory_1.json           
+├── some_file_in_root_directory_2.json
+└── demo-images-from-csv
+  ├── images.csv                    
+  ├── dogs
+  │ ├── img_01.jpeg
+  │ └── img_02.jpeg    
+  ├── cats
+  │ ├── img_01.jpeg
+  │ └── img_02.jpeg   
+  └── horses
+    ├── img_01.jpeg
+    └── img_02.jpeg                      
 ```
 </details>
   
