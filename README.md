@@ -187,12 +187,10 @@ https://images.io/image_example_5.png;tag1,tag3
 <img src="https://i.imgur.com/6Ej5E8C.png" width="100%"/>
 
 
-
 # Demo
 <a data-key="sly-embeded-video-link" href="https://youtu.be/TrRd1sfT-q4" data-video-code="TrRd1sfT-q4">
     <img src="https://i.imgur.com/Fg3pecP.png" alt="SLY_EMBEDED_VIDEO_LINK"  width="70%">
 </a>
-
 
 # Screenshot
 
