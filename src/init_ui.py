@@ -1,4 +1,4 @@
-import globals as g
+import sly_globals as g
 import supervisely as sly
 from functools import partial
 from supervisely.io.fs import get_file_name_with_ext

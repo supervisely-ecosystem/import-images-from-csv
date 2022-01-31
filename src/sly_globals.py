@@ -29,8 +29,8 @@ remote_csv_dir_path = os.path.dirname(INPUT_FILE)
 img_dir = os.path.join(storage_dir, "img_dir")
 mkdir(img_dir, True)
 
-DEFAULT_DELIMITER = ','
-TAGS_DELIMITER = ';'
+DEFAULT_DELIMITER = ';'
+TAGS_DELIMITER = ','
 
 possible_image_url_col_names = ["url"]
 possible_image_path_col_names = ["path"]

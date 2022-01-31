@@ -2,7 +2,7 @@ import os
 import pathlib
 
 
-import globals as g
+import sly_globals as g
 import supervisely as sly
 import init_ui
 

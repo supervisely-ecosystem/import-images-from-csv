@@ -1,6 +1,6 @@
 import os
 import init_ui
-import globals as g
+import sly_globals as g
 import supervisely as sly
 from supervisely.io.fs import download, get_file_name_with_ext
 from supervisely._utils import generate_free_name
