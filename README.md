@@ -52,13 +52,13 @@ Application key points:
 [download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.1.zip)
   
 ```text
-path,tag
-/dogs/img_01.jpeg,dog
-/dogs/img_02.jpeg,dog
-/cats/img_01.jpeg,cat
-/cats/img_02.jpeg,cat
-/horses/img_01.jpeg,horse
-/horses/img_02.jpeg,horse
+path;tag
+/dogs/img_01.jpeg;dog
+/dogs/img_02.jpeg;dog
+/cats/img_01.jpeg;cat
+/cats/img_02.jpeg;cat
+/horses/img_01.jpeg;horse
+/horses/img_02.jpeg;horse
 ```
   
 **Tree**:
@@ -84,13 +84,13 @@ path,tag
 [download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.2.zip)
   
 ```text
-path,tag
-/img_01.jpeg,dog
-/img_02.jpeg,dog
-/img_03.jpeg,cat
-/img_04.jpeg,cat
-/img_05.jpeg,horse
-/img_06.jpeg,horse
+path;tag
+/img_01.jpeg;dog
+/img_02.jpeg;dog
+/img_03.jpeg;cat
+/img_04.jpeg;cat
+/img_05.jpeg;horse
+/img_06.jpeg;horse
 ```
 
 **Tree**:
@@ -116,13 +116,13 @@ path,tag
 [download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.3.zip)
   
 ```text
-path,tag
-/dogs/img_01.jpeg,dog
-/dogs/img_02.jpeg,dog
-/cats/img_01.jpeg,cat
-/cats/img_02.jpeg,cat
-/horses/img_01.jpeg,horse
-/horses/img_02.jpeg,horse
+path;tag
+/dogs/img_01.jpeg;dog
+/dogs/img_02.jpeg;dog
+/cats/img_01.jpeg;cat
+/cats/img_02.jpeg;cat
+/horses/img_01.jpeg;horse
+/horses/img_02.jpeg;horse
 ```
 
 **Tree**:
@@ -164,12 +164,12 @@ path,tag
 [download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/URL.Example.zip)
   
 ```text
-url,tag
-https://images.io/image_example_1.png,tag1;tag2
-https://images.io/image_example_2.png,tag3
-https://images.io/image_example_3.png,
-https://images.io/image_example_4.png,big tag with spaces;tag4
-https://images.io/image_example_5.png,tag1;tag3
+url;tag
+https://images.io/image_example_1.png;tag1,tag2
+https://images.io/image_example_2.png;tag3
+https://images.io/image_example_3.png;
+https://images.io/image_example_4.png;big tag with spaces,tag4
+https://images.io/image_example_5.png;tag1,tag3
 ```
 </details>
 
