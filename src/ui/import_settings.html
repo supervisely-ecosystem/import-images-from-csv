@@ -1,9 +1,11 @@
 <sly-card class="mt10"
           title="2. Import settings"
-          subtitle="Configure destination project and dataset">
+          subtitle="Configure destination project and dataset"
+          style="margin-bottom: 20px; padding-bottom: 10px"
+>
 
 
-    <sly-field title="Assign tags from csv table" v-show="state.uniqueTagsLen > 0">
+    <sly-field title="Assign tags from csv table" v-show="state.totalTagsLen > 0">
         <el-select v-model="state.needTag" placeholder="Select dataset year">
             <el-option key="add" label="Add Tags" value="add"></el-option>
             <el-option key="ignore" label="Ignore Tags" value="ignore"></el-option>
@@ -85,7 +87,7 @@
                            (state.dstDatasetMode === 'existingDataset' && !state.selectedDatasetName)
                            "
             @click="data.processing = true; data.finished = false; command('process')">
-        <i class="zmdi zmdi-play mr5"></i> Start import
+        <i v-if="!data.processing" class="zmdi zmdi-play mr5"></i> Start import
     </el-button>
     <div class="mt5" v-if="state.dstProjectMode === 'newProject' && state.dstProjectName.length === 0"
          style="color: red">
@@ -102,13 +104,13 @@
         Please, select one of the existing datasets
     </div>
 
-    <div v-if="data.progressName1" class="mt10">
+    <div v-if="data.progressName1" style="margin-bottom: 0; margin-top: 15px">
         <div>{{data.progressName1}}: {{data.currentProgressLabel1}} / {{data.totalProgressLabel1}}</div>
         <el-progress :percentage="Math.round(data.currentProgress1 * 100 / data.totalProgress1)"></el-progress>
     </div>
-    <br>
-    <br>
-    <sly-field v-if="data.finished === true" title=""
+<!--    <br>-->
+<!--    <br>-->
+    <sly-field v-if="data.finished === true" title="" style="margin-bottom: 0; margin-top: 15px"
                description="New project has been successfully created">
         <a slot="title" target="_blank" :href="`/projects/${data.resultProjectId}/datasets`">{{data.resultProject}}</a>
         <sly-icon slot="icon" :options="{ imageUrl: `${data.resultProjectPreviewUrl}` }"/>

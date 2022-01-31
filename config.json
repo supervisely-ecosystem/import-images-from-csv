@@ -4,7 +4,7 @@
   "categories": [
     "import"
   ],
-  "description": "Create images project from csv file with images URL links or Team Files paths",
+  "description": "Upload images with their tags (optional) to project from CSV file",
   "docker_image": "supervisely/base-py-sdk:6.6.0",
   "main_script": "src/main.py",
   "task_location": "workspace_tasks",
