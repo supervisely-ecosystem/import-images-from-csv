@@ -5,10 +5,11 @@ import supervisely as sly
 from supervisely.io.fs import download, get_file_name_with_ext
 from supervisely._utils import generate_free_name
 
-# -- need SDK fix -- api.file.download_directory (creates root dir if download from Team Files root)
-import shutil
+import shutil  # @TODO: SDK fix — api.file.download_directory (creates root dir if download from Team Files root)
 import tarfile
 from supervisely.io.fs import silent_remove
+
+
 def download_directory(team_id, remote_path, local_save_path, progress_cb=None):
     local_temp_archive = os.path.join(local_save_path, "temp.tar")
     g.api.file._download(team_id, remote_path, local_temp_archive, progress_cb)
@@ -69,8 +70,10 @@ def download_csv_dir(api):
     remote_csv_dir = os.path.dirname(g.INPUT_FILE)
     if remote_csv_dir != "/":
         remote_csv_dir = remote_csv_dir + "/"
+
+    csv_dir_size = api.file.get_directory_size(g.TEAM_ID, remote_csv_dir)
     progress_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, f"Downloading CSV Root Directory {csv_dir_name}",
-                                          g.csv_dir_size, is_size=True)
+                                          csv_dir_size, is_size=True)
     download_directory(g.TEAM_ID, remote_csv_dir, save_dir, progress_cb)
     init_ui.reset_progress(api, g.TASK_ID, 1)
 
@@ -106,11 +109,11 @@ def process_image_by_local_path(image_path, image_names, ds_images_names, datase
     return image_name, image_path
 
 
-def process_image(is_url, treshold, image_name, image_names, ds_images_names, dataset, app_logger):
+def process_image(is_url, image_name, image_names, ds_images_names, dataset, app_logger):
     if is_url:
         image_name, image_path = process_image_by_url(image_name, image_names, ds_images_names, dataset, app_logger)
     else:
-        if treshold is False:
+        if not g.download_by_dirs:
             image_name, image_path = process_image_by_path(image_name, image_names, ds_images_names, dataset,
                                                            app_logger)
         else:
@@ -152,14 +155,11 @@ def process_ann(csv_row, image_path, tag_col_name):
     return ann
 
 
-def show_output_message(api, csv_images_len, project, dataset_name):
-    if csv_images_len == 1:
-        modal_message = "image"
-    else:
-        modal_message = "images"
+def show_output_message(api, processed_images_counter, project, dataset_name):
+    modal_message = "image" if processed_images_counter == 1 else 'images'
 
     g.my_app.show_modal_window(
-        f"{csv_images_len} {modal_message} has been successfully imported to the project \"{project.name}\""
+        f"{processed_images_counter} {modal_message} has been successfully imported to the project \"{project.name}\""
         f", dataset \"{dataset_name}\". You can continue importing images to the same or new "
         f"project. If you've finished with the app, stop it manually.")
 
@@ -177,28 +177,26 @@ def show_output_message(api, csv_images_len, project, dataset_name):
 
 
 def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger):
-    unprocessed_images_cnt = len(g.csv_reader)
-    is_beyond_threshold = False
+    if not g.is_url and g.download_by_dirs:
+        download_csv_dir(api)
+
+    processed_images_counter = 0
+
     project, dataset = create_project(api, state)
     ds_images_names = set([img.name for img in api.image.get_list(dataset.id)])
-
-    if g.is_url is False and g.images_size_threshold >= g.THRESHOLD_SIZE_LIMIT:
-        download_csv_dir(api)
-        is_beyond_threshold = True
 
     progress_items_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, "Processing CSV", len(g.csv_reader))
     for batch in sly.batched(g.csv_reader):
         image_paths = []
         image_names = []
-        if tag_col_name is not None:
-            anns = []
+        anns = []
         for row in batch:
             try:
-                image_name, image_path = process_image(g.is_url, is_beyond_threshold, row[image_col_name], image_names,
+                image_name, image_path = process_image(g.is_url, row[image_col_name], image_names,
                                                        ds_images_names, dataset, app_logger)
+                processed_images_counter += 1
             except Exception:
                 app_logger.warn(f"Couldn't process: {row[image_col_name]}, item will be skipped")
-                unprocessed_images_cnt -= 1
                 continue
 
             if tag_col_name is not None:
@@ -215,4 +213,4 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
         progress_items_cb(len(batch))
 
     init_ui.reset_progress(api, g.TASK_ID, 1)
-    show_output_message(api, unprocessed_images_cnt, project, dataset.name)
+    show_output_message(api, processed_images_counter, project, dataset.name)

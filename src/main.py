@@ -1,4 +1,7 @@
 import os
+import pathlib
+
+
 import globals as g
 import supervisely as sly
 import init_ui
@@ -7,25 +10,29 @@ from ui.preview_data import download_and_preview_table
 from ui.import_settings import process_images_from_csv
 
 
-def calculate_images_size_threshold(api, csv_path, image_paths):
-    csv_dir = os.path.dirname(csv_path)
-    images_size = 0
-    for image_path in image_paths:
-        try:
-            images_size += api.file.get_info_by_path(g.TEAM_ID, image_path).sizeb
-        except Exception:
-            continue
-    g.csv_dir_size = api.file.get_directory_size(g.TEAM_ID, csv_dir)
-    images_size_threshold = round((images_size * 100) / g.csv_dir_size)
-    return images_size_threshold
+def define_download_method(api, csv_path, images_paths):
+    csv_root_path = os.path.join(os.path.dirname(csv_path), '')
+    images_paths = [os.path.join(csv_root_path, image_path[1:]) for image_path in images_paths]  # relative to absolute
+
+    files_in_directory = api.file.list2(g.TEAM_ID, csv_root_path)
+
+    root_directory_size = 0
+    files_to_download_size = 0
+
+    for file_info in files_in_directory:
+        if file_info.path in images_paths:
+            files_to_download_size += file_info.sizeb
+        root_directory_size += file_info.sizeb
+
+    g.download_by_dirs = bool(files_to_download_size / root_directory_size > g.THRESHOLD_SIZE_LIMIT)
 
 
 @g.my_app.callback("preview")
 @sly.timeit
 def preview(api: sly.Api, task_id, context, state, app_logger):
     images_paths = download_and_preview_table(api, task_id)
-    if g.is_url is False:
-        g.images_size_threshold = calculate_images_size_threshold(api, g.INPUT_FILE, images_paths)
+    if not g.is_url:
+        g.images_size_threshold = define_download_method(api, g.INPUT_FILE, images_paths)
 
 
 @g.my_app.callback("process")
