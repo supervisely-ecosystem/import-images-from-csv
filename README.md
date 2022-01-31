@@ -6,9 +6,10 @@
 
 <p align="center">
   <a href="#Overview">Overview</a> •
+  <a href="#Usage">Usage</a> •
   <a href="#How-To-Run">How To Run</a> •
   <a href="#Demo">Demo</a> •
-  <a href="#Usage">Usage</a> 
+  <a href="#Screenshot">Screenshot</a> 
   
 </p>
 
@@ -185,9 +186,6 @@ https://images.io/image_example_5.png;tag1,tag3
 
 <img src="https://i.imgur.com/6Ej5E8C.png" width="100%"/>
 
-3. Wait until the app is started, press `Open` button in `Workspace tasks`
-
-<img src="https://i.imgur.com/FDMhaqu.png" width="100%"/>
 
 
 # Demo
@@ -196,11 +194,6 @@ https://images.io/image_example_5.png;tag1,tag3
 </a>
 
 
-# Usage
+# Screenshot
 
-1. **Preview CSV file** section contains all information about csv file and some of it's stats
-2. **Import settings** section is configurable. You can configure destination project, dataset, and choose whether you want to assign or ignore tags. Assign/ignore option only available if there are tags in the `.CSV` file.
-3. You can import images from `.CSV` file to multiple destinations during one application session
-4. When you have finished working with the application, **stop it manually**
-
-<img src="https://i.imgur.com/XaIFXen.png" width="100%"/>
+<img src="https://imgur.com/I2Sa29g.png" width="100%"/>
