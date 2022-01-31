@@ -36,8 +36,10 @@ Application key points:
 # Usage
 
 
+
 <details>
   <summary>1. Images from <b>Team Files</b> ⭐ </summary>
+<br>
 
 1. Create `.CSV` file with columns: 
    - **path**

@@ -4,12 +4,12 @@
   "categories": [
     "import"
   ],
-  "description": "Upload images with their tags (optional) to project from CSV file",
+  "description": "Upload images from .CSV file",
   "docker_image": "supervisely/base-py-sdk:6.6.0",
   "main_script": "src/main.py",
   "task_location": "workspace_tasks",
-  "icon": "https://i.imgur.com/5mmHzlK.png",
-  "icon_cover": false,
+  "icon": "https://imgur.com/zlcLjAM.png",
+  "icon_cover": true,
   "icon_background": "#FFFFFF",
   "context_menu": {
     "target": [
