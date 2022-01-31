@@ -11,6 +11,9 @@ from supervisely.io.fs import silent_remove
 
 
 def download_directory(team_id, remote_path, local_save_path, progress_cb=None):
+    os.makedirs(local_save_path, exist_ok=True)
+    sly.fs.clean_dir(local_save_path)
+
     local_temp_archive = os.path.join(local_save_path, "temp.tar")
     g.api.file._download(team_id, remote_path, local_temp_archive, progress_cb)
     tr = tarfile.open(local_temp_archive)
@@ -18,10 +21,14 @@ def download_directory(team_id, remote_path, local_save_path, progress_cb=None):
     silent_remove(local_temp_archive)
     if remote_path == '/':
         remote_path = '/root'
+
     temp_dir = os.path.join(local_save_path, os.path.basename(os.path.normpath(remote_path)))
+
     file_names = os.listdir(temp_dir)
     for file_name in file_names:
-        shutil.move(os.path.join(temp_dir, file_name), local_save_path)
+        file_path = os.path.join(temp_dir, file_name)
+        shutil.move(f'{file_path}', local_save_path)
+
     shutil.rmtree(temp_dir)
 
 
