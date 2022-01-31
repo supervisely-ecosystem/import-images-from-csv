@@ -151,7 +151,7 @@ path;tag
 
 
 <details>
-  <summary>2. Import images from URLs</summary>
+  <summary>2. Import Images by <b>URLs</b></summary>
 
 
 1. Create `.CSV` file with following columns: 

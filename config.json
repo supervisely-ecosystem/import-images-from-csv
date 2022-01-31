@@ -9,7 +9,7 @@
   "main_script": "src/main.py",
   "task_location": "workspace_tasks",
   "icon": "https://imgur.com/zlcLjAM.png",
-  "icon_cover": true,
+  "icon_cover": false,
   "icon_background": "#FFFFFF",
   "context_menu": {
     "target": [
