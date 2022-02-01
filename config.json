@@ -4,7 +4,7 @@
   "categories": [
     "import"
   ],
-  "description": "Upload images from .CSV file",
+  "description": "Upload images using .CSV file",
   "docker_image": "supervisely/base-py-sdk:6.6.0",
   "main_script": "src/main.py",
   "task_location": "workspace_tasks",

@@ -39,7 +39,7 @@ Application key points:
 
 
 <details>
-  <summary>1. Images from <b>Team Files</b> ⭐ </summary>
+  <summary>1. Import Images from <b>Team Files</b> ⭐ </summary>
 <br>
 
 1. Create `.CSV` file with columns: 
