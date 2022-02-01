@@ -24,7 +24,7 @@
 
 # Overview
 
-Application converts **.CSV file** to Supervisely Images Project
+Application imports Supervisely Images Project using **.CSV file** 
 
 Application key points:  
 - Import Images from **Team Files** (⭐ _fastest_)
