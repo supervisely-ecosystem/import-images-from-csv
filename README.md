@@ -43,8 +43,8 @@ Application key points:
 <br>
 
 1. Create `.CSV` file with columns: 
-   - **path**
-   - **tag(optional)**
+   - **path** — relative path to image, from .CSV file directory and below 
+   - **tag(optional)** — image tag
 2. Drag and drop this `.CSV` file and folder(s) with images to Team Files
 
 ### Example 1: CSV file in Team Files root and images in subdirectories:
@@ -155,12 +155,12 @@ path;tag
 
 
 1. Create `.CSV` file with following columns: 
-   - **url**  
-   - **tag** (optional)
+   - **url** — full URL-link to image, ends with image extension (.jpg, .png)
+   - **tag** (optional) — image tag
 2. Drag and drop this `.CSV` file to Team Files
 3. Application will download images by url and upload it to project.
 
-
+### Example:
 
 **Path to CSV file**: any location
   
