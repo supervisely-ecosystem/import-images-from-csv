@@ -164,7 +164,7 @@ path;tag
 
 **Path to CSV file**: any location
   
-[example 4 — download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/files/7977233/Example4.zip)
+[example 4 — download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/files/7977425/Example4.zip)
   
 ```text
 url;tag
