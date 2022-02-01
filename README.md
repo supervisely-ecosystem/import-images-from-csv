@@ -52,7 +52,7 @@ Application key points:
 
 **Path to CSV file**: /images.csv
   
-[download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.1.zip)
+[example 1 — download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/files/7977236/Example1.zip)
   
 ```text
 path;tag
@@ -84,7 +84,7 @@ path;tag
 
 **Path to CSV file**: /demo-images-from-csv/images.csv
   
-[download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.2.zip)
+[example 2 — download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/files/7977235/Example2.zip)
   
 ```text
 path;tag
@@ -116,7 +116,7 @@ path;tag
 
 **Path to CSV file**: /demo-images-from-csv/images.csv
   
-[download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/Example.3.zip)
+[example 3 — download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/files/7977234/Example3.zip)
   
 ```text
 path;tag
@@ -160,11 +160,11 @@ path;tag
 2. Drag and drop this `.CSV` file to Team Files
 3. Application will download images by url and upload it to project.
 
-### Example:
+### Example 4:
 
 **Path to CSV file**: any location
   
-[download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/releases/download/v0.0.1/URL.Example.zip)
+[example 4 — download demo files](https://github.com/supervisely-ecosystem/import-images-from-csv/files/7977233/Example4.zip)
   
 ```text
 url;tag
