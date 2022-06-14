@@ -5,8 +5,9 @@ from pathlib import Path
 
 import supervisely as sly
 from supervisely.io.fs import mkdir
+from supervisely.app.v1.app_service import AppService
 
-my_app = sly.AppService()
+my_app: AppService = AppService()
 api: sly.Api = my_app.public_api
 
 shutil.rmtree(my_app.data_dir, ignore_errors=True)
