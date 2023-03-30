@@ -71,7 +71,8 @@ def download_file_from_link_directly(api: sly.Api, link, file_name, dataset):
     image_info = api.image.upload_link(
                 dataset_id=dataset.id,
                 name=file_name,
-                link=link
+                link=link,
+                force_metadata_for_links=False
             )
     return image_info
 

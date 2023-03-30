@@ -1,4 +1,5 @@
 secret_debug.env
 .idea
+.vscode
 venv
 src/debug
