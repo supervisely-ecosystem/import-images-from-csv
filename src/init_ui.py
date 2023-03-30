@@ -24,6 +24,9 @@ def init_table_preview(data, state):
 
 
 def init_options(data, state):
+    state["addMode"] = "copyData"  # "addByLink"
+    state["forceMetadata"] = True
+
     state["dstProjectMode"] = "newProject"
     state["dstProjectName"] = "my_images"
     state["dstProjectId"] = None

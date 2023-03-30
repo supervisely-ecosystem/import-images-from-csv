@@ -107,11 +107,10 @@ def process_image_by_url(image_url, image_names, ds_images_names, dataset, app_l
 
 def process_image_by_url_directly(api, image_url, image_names, ds_images_names, dataset, app_logger):
     image_url = image_url.strip()
-    image_name = os.path.basename(os.path.normpath(image_url)) + ".png"    
+    image_name = os.path.basename(os.path.normpath(image_url))    
     image_name = validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger)
     image_info = download_file_from_link_directly(api, image_url, image_name, dataset)    
-    image_path = image_info.path_original
-    return image_name, image_path, image_info
+    return image_info
 
 
 def process_image_by_path(image_path, image_names, ds_images_names, dataset, app_logger):
@@ -146,18 +145,9 @@ def process_image(is_url, image_name, image_names, ds_images_names, dataset, app
                                                                  app_logger)
     return image_name, image_path
 
-def process_image_directly(is_url, image_name, image_names, ds_images_names, dataset, app_logger):
-    if is_url:
-        image_name, image_path, image_info = process_image_by_url_directly(image_name, image_names, ds_images_names, dataset, app_logger)        
-    else:
-        image_info = None
-        if not g.download_by_dirs:
-            image_name, image_path = process_image_by_path(image_name, image_names, ds_images_names, dataset,
-                                                           app_logger)
-        else:
-            image_name, image_path = process_image_by_local_path(image_name, image_names, ds_images_names, dataset,
-                                                                 app_logger)
-    return image_name, image_path, image_info
+def process_image_directly(api, image_name, image_names, ds_images_names, dataset, app_logger):
+    image_info = process_image_by_url_directly(api, image_name, image_names, ds_images_names, dataset, app_logger)        
+    return image_info
 
 def validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger):
     if image_name in ds_images_names:
@@ -226,11 +216,10 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
     for batch in sly.batched(g.csv_reader):
         image_paths = []
         image_names = []
-        images_infos = []
         anns = []
         for row in batch:
             try:
-                image_name, image_path, image_info = process_image_directly(g.is_url, row[image_col_name], image_names,
+                image_name, image_path = process_image(g.is_url, row[image_col_name], image_names,
                                                        ds_images_names, dataset, app_logger)
                 processed_images_counter += 1
             except Exception:
@@ -243,10 +232,44 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
 
             image_paths.append(image_path)
             image_names.append(image_name)
+
+        images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)
+        if tag_col_name is not None:
+            images_ids = [image_info.id for image_info in images_infos]
+            api.annotation.upload_anns(images_ids, anns)
+        progress_items_cb(len(batch))
+
+    init_ui.reset_progress(api, g.TASK_ID, 1)
+    show_output_message(api, processed_images_counter, project, dataset.name)
+
+def process_images_from_csv_by_link(api, state, image_col_name, tag_col_name, app_logger):
+    
+    processed_images_counter = 0
+
+    project, dataset = create_project(api, state)
+    ds_images_names = set([img.name for img in api.image.get_list(dataset.id)])
+
+    progress_items_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, "Processing CSV", len(g.csv_reader))
+    for batch in sly.batched(g.csv_reader):        
+        images_infos = []
+        image_names = []
+        image_paths = []
+        anns = []
+        for row in batch:
+            try:
+                image_info = process_image_directly(api, row[image_col_name], image_names,
+                                                       ds_images_names, dataset, app_logger)
+                processed_images_counter += 1
+            except Exception:
+                app_logger.warn(f"Couldn't process: {row[image_col_name]}, item will be skipped")
+                continue
+
+            if tag_col_name is not None:
+                ann = process_ann(row, image_info.full_storage_url, tag_col_name)
+                anns.append(ann)
+
             images_infos.append(image_info)
-        
-        if not g.is_url:         
-            images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)        
+            image_names.append(image_info.name)
             
         if tag_col_name is not None:
             images_ids = [image_info.id for image_info in images_infos]

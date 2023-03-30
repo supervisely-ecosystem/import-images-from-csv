@@ -4,6 +4,26 @@
           style="margin-bottom: 20px; padding-bottom: 10px"
 >
 
+    <sly-field title="Data duplication"
+      description="Choose whether data should be copied to internal Supervisely Storage or just added by link">
+      <div class="fflex" style="flex-direction: column; align-items: flex-start">
+        <el-radio class="radio" v-model="state.addMode" label="copyData">
+          Copy file from cloud to Supervisely Storage
+        </el-radio>
+        <el-radio class="radio mt5" v-model="state.addMode" label="addByLink" style="margin-left: 0">
+          Keep file only in cloud without duplication, add to Supervisely
+          Storage by link
+        </el-radio>
+      </div>
+      <div class="fflex align-start mt5" v-if="state.addMode === 'addByLink'">
+        <el-checkbox v-model="state.forceMetadata" style="margin: 5px 10px 0 0">
+        </el-checkbox>
+        <sly-field class="mt20" title="Data validation"
+          description="Image will be downloaded once to calculate hash, get resolution and validate mimetype. If disabled, image will be directly added to the selected project without metadata (fast import without validation).">
+        </sly-field>
+      </div>
+    </sly-field>
+
 
     <sly-field title="Assign tags from csv table" v-show="state.totalTagsLen > 0">
         <el-select v-model="state.needTag" placeholder="Select dataset year">
