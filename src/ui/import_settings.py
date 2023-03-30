@@ -67,6 +67,14 @@ def download_file_from_link(link, save_path, file_name, app_logger):
         sly.logger.warn(e)
 
 
+def download_file_from_link_directly(api: sly.Api, link, file_name, dataset):
+    image_info = api.image.upload_link(
+                dataset_id=dataset.id,
+                name=file_name,
+                link=link
+            )
+    return image_info
+
 def download_csv_dir(api):
     csv_dir_name = os.path.dirname(g.INPUT_FILE.lstrip('/').rstrip('/'))
     save_dir = os.path.join(os.path.dirname(g.local_csv_path), csv_dir_name)
@@ -94,6 +102,15 @@ def process_image_by_url(image_url, image_names, ds_images_names, dataset, app_l
         save_path = os.path.join(g.img_dir, image_name)
     download_file_from_link(image_url, save_path, image_name, app_logger)
     return image_name, save_path
+
+
+def process_image_by_url_directly(api, image_url, image_names, ds_images_names, dataset, app_logger):
+    image_url = image_url.strip()
+    image_name = os.path.basename(os.path.normpath(image_url)) + ".png"    
+    image_name = validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger)
+    image_info = download_file_from_link_directly(api, image_url, image_name, dataset)    
+    image_path = image_info.path_original
+    return image_name, image_path, image_info
 
 
 def process_image_by_path(image_path, image_names, ds_images_names, dataset, app_logger):
@@ -128,6 +145,18 @@ def process_image(is_url, image_name, image_names, ds_images_names, dataset, app
                                                                  app_logger)
     return image_name, image_path
 
+def process_image_directly(is_url, image_name, image_names, ds_images_names, dataset, app_logger):
+    if is_url:
+        image_name, image_path, image_info = process_image_by_url_directly(image_name, image_names, ds_images_names, dataset, app_logger)        
+    else:
+        image_info = None
+        if not g.download_by_dirs:
+            image_name, image_path = process_image_by_path(image_name, image_names, ds_images_names, dataset,
+                                                           app_logger)
+        else:
+            image_name, image_path = process_image_by_local_path(image_name, image_names, ds_images_names, dataset,
+                                                                 app_logger)
+    return image_name, image_path, image_info
 
 def validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger):
     if image_name in ds_images_names:
@@ -196,10 +225,11 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
     for batch in sly.batched(g.csv_reader):
         image_paths = []
         image_names = []
+        images_infos = []
         anns = []
         for row in batch:
             try:
-                image_name, image_path = process_image(g.is_url, row[image_col_name], image_names,
+                image_name, image_path, image_info = process_image_directly(g.is_url, row[image_col_name], image_names,
                                                        ds_images_names, dataset, app_logger)
                 processed_images_counter += 1
             except Exception:
@@ -212,8 +242,11 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
 
             image_paths.append(image_path)
             image_names.append(image_name)
-
-        images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)
+            images_infos.append(image_info)
+        
+        if not g.is_url:         
+            images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)        
+            
         if tag_col_name is not None:
             images_ids = [image_info.id for image_info in images_infos]
             api.annotation.upload_anns(images_ids, anns)
