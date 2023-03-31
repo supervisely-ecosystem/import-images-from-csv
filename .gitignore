@@ -1,6 +1,8 @@
 secret_debug.env
 .idea
 .vscode
+.venv
 venv
 src/debug
 __pycache__
+supervisely
