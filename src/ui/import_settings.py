@@ -308,10 +308,12 @@ def process_images_from_csv_link(api, state, image_col_name, tag_col_name, app_l
 
             images_infos.append(image_info)
             image_names.append(image_info.name)
-            
+        
+        bounds_validation = True if not state["forceMetadata"] else False
+
         if tag_col_name is not None:
             images_ids = [image_info.id for image_info in images_infos]
-            api.annotation.upload_anns(images_ids, anns)
+            api.annotation.upload_anns(images_ids, anns, skip_bounds_validation=bounds_validation)
         progress_items_cb(len(batch))
 
     init_ui.reset_progress(api, g.TASK_ID, 1)
