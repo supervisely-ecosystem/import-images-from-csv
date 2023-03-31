@@ -109,6 +109,9 @@ def download_csv_dir(api):
 
 def process_image_by_url(api, image_url, image_names, ds_images_names, dataset, app_logger):
     image_url = image_url.strip()
+    extension = os.path.splitext(image_url)[1]
+    if not extension:
+        sly.logger.warn(f"Image [{image_url}] doesn't have extension in link")    
     image_name = os.path.basename(os.path.normpath(image_url))
     save_path = os.path.join(g.img_dir, image_name)
     if os.path.isfile(save_path):
@@ -120,6 +123,9 @@ def process_image_by_url(api, image_url, image_names, ds_images_names, dataset, 
 
 def process_image_link(api, image_url, image_names, ds_images_names, dataset, app_logger, state):
     image_url = image_url.strip()
+    extension = os.path.splitext(image_url)[1]
+    if not extension:
+        sly.logger.warn(f"Image [{image_url}] doesn't have extension in link")
     image_name = os.path.basename(os.path.normpath(image_url))    
     image_name = validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger)
     image_info = download_file_from_link_directly(api, image_url, image_name, dataset, state)    
