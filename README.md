@@ -32,7 +32,7 @@ Application key points:
 - `.CSV` columns delimiter is **`;`** (**semicolon**), tags delimiter is **`,`** (**comma**)
 
 
-🔥 Starting from version v1.0.7, the application supports cloud storage link integration and data validation features. You can learn how to use sorrage links properly in [this article](https://docs.supervise.ly/enterprise-edition/advanced-tuning/s3#links-plugin-cloud-providers-support).
+🔥 Starting from version v1.0.7, the application supports cloud storage link integration and data validation features. You can learn how to use storage links properly in [this article](https://docs.supervise.ly/enterprise-edition/advanced-tuning/s3#links-plugin-cloud-providers-support).
 
 
 
