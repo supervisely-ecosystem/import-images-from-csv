@@ -59,7 +59,8 @@ def create_project(api, state):
 
 
 def check_is_bucket_link(link):
-    return link.startswith('s3://') or link.startswith('azure://') or link.startswith('google://')
+    bucket_prefixes = ['s3://', 'azure://', 'google://', 'gcs://', 'minio://', 'fs://']
+    return any(link.startswith(prefix) for prefix in bucket_prefixes)
 
 
 def download_file_from_link(api, link, save_path, file_name, app_logger):
@@ -186,10 +187,9 @@ def process_ann(csv_row, image_path, tag_col_name):
             tag_meta = g.project_meta.get_tag_meta(tag_name)
             tag_metas.append(tag_meta)
 
-    # tag_col = sly.TagCollection(tag_metas)
+    tag_col = sly.TagCollection(tag_metas)
        
-    # ann = sly.Annotation.from_img_path(image_path).add_tags(tag_col)
-    ann = sly.Annotation.from_img_path(image_path)
+    ann = sly.Annotation.from_img_path(image_path).add_tags(tag_col)    
     return ann
 
 
@@ -207,9 +207,9 @@ def process_ann_link(csv_row, tag_col_name):
             tag_meta = g.project_meta.get_tag_meta(tag_name)
             tag_metas.append(tag_meta)
 
-    # tag_col = sly.TagCollection(tag_metas) ????? doesn't work
+    tag_col = sly.TagCollection(tag_metas)
     
-    ann = sly.Annotation(img_size=[None,None])
+    ann = sly.Annotation(img_size=[None,None]).add_tags(tag_col)
     return ann
 
 
