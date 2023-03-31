@@ -7,7 +7,7 @@ import supervisely as sly
 import init_ui
 
 from ui.preview_data import download_and_preview_table
-from ui.import_settings import process_images_from_csv
+from ui.import_settings import process_images_from_csv, process_images_from_csv_link
 
 
 def define_download_method(api, csv_path, images_paths):
@@ -38,8 +38,10 @@ def preview(api: sly.Api, task_id, context, state, app_logger):
 @g.my_app.callback("process")
 @sly.timeit
 def process(api: sly.Api, task_id, context, state, app_logger):
-    process_images_from_csv(api, state, g.image_col_name, g.tag_col_name, app_logger)
-
+    if state["addMode"] == "copyData":
+        process_images_from_csv(api, state, g.image_col_name, g.tag_col_name, app_logger)
+    elif state["addMode"] == "addByLink":
+        process_images_from_csv_link(api, state, g.image_col_name, g.tag_col_name, app_logger)
 
 def main():
     sly.logger.info("Script arguments", extra={

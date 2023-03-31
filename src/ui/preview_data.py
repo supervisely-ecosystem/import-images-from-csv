@@ -73,24 +73,28 @@ def create_preview_table_from_csv_file(csv_path):
     with open(csv_path, "r") as images_csv:
         reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
         reader = [row for row in reader]
-        g.csv_reader = reader
-        g.image_col_name, g.tag_col_name = validate_column_names(reader[0])
+        stripped_reader = []
+        for row in reader:
+            stripped_row = {key: value.strip() for key, value in row.items()}
+            stripped_reader.append(stripped_row)
+        g.csv_reader = stripped_reader
+        g.image_col_name, g.tag_col_name = validate_column_names(stripped_reader[0])
 
         if g.tag_col_name is not None:
             csv_table["columns"] = ["row", g.image_col_name, g.tag_col_name]
-            for idx, row in enumerate(reader):
+            for idx, row in enumerate(stripped_reader):
                 csv_table["data"].append([idx + 1, row[g.image_col_name], row[g.tag_col_name]])
-            total_tags = flat_tag_list(list(set([row[g.tag_col_name] for row in reader])))
+            total_tags = flat_tag_list(list(set([row[g.tag_col_name] for row in stripped_reader])))
             g.project_meta = create_project_meta_from_csv_tags(total_tags)
             need_tag = "add"
         else:
             csv_table["columns"] = ["row", g.image_col_name]
-            for idx, row in enumerate(reader):
+            for idx, row in enumerate(stripped_reader):
                 csv_table["data"].append([idx + 1, row[g.image_col_name]])
             total_tags = 0
             need_tag = "ignore"
 
-        images_paths = [row[g.image_col_name] for row in reader]
+        images_paths = [row[g.image_col_name] for row in stripped_reader]
 
     return csv_table, images_paths, total_tags, need_tag
 

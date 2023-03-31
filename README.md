@@ -32,6 +32,9 @@ Application key points:
 - `.CSV` columns delimiter is **`;`** (**semicolon**), tags delimiter is **`,`** (**comma**)
 
 
+🔥 Starting from version v1.0.7, the application supports cloud storage link integration and data validation features. You can learn how to use storage links properly in [this article](https://docs.supervise.ly/enterprise-edition/advanced-tuning/s3#links-plugin-cloud-providers-support).
+
+
 
 # Usage
 
@@ -194,4 +197,9 @@ https://images.io/image_example_5.png;tag1,tag3
 
 # Screenshot
 
-<img src="https://imgur.com/I2Sa29g.png" width="100%"/>
+### App interface
+<img src="https://user-images.githubusercontent.com/57998637/229192985-5b41cc0a-0f77-4496-a1ac-9060795d4810.png" width="1237px"/>
+
+
+### Cloud storage link example
+<img src="https://user-images.githubusercontent.com/57998637/229191946-d58f8da8-e03e-4e81-bcf2-4c8d804a9843.png" width="1198px">

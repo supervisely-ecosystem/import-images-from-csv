@@ -58,13 +58,35 @@ def create_project(api, state):
     return project, dataset
 
 
-def download_file_from_link(link, save_path, file_name, app_logger):
-    try:
-        download(link, save_path)
-        app_logger.info(f'{file_name} has been successfully downloaded')
-    except Exception as e:
-        sly.logger.warn(f"Could not download file {file_name}")
-        sly.logger.warn(e)
+def check_is_bucket_link(link):
+    bucket_prefixes = ['s3://', 'azure://', 'google://', 'gcs://', 'minio://', 'fs://']
+    return any(link.startswith(prefix) for prefix in bucket_prefixes)
+
+
+def download_file_from_link(api, link, save_path, file_name, app_logger):
+    if check_is_bucket_link(link):
+        try:
+            api.remote_storage.download_path(link, save_path)
+        except Exception as e:
+            sly.logger.warn(f"Could not download file {file_name}")
+            sly.logger.warn(e)
+    else:
+        try:
+            download(link, save_path)
+            app_logger.info(f'{file_name} has been successfully downloaded')
+        except Exception as e:
+            sly.logger.warn(f"Could not download file {file_name}")
+            sly.logger.warn(e)
+
+
+def download_file_from_link_directly(api: sly.Api, link, file_name, dataset, state):
+    image_info = api.image.upload_link(
+                dataset_id=dataset.id,
+                name=file_name,
+                link=link,
+                force_metadata_for_links=state["forceMetadata"]
+            )
+    return image_info
 
 
 def download_csv_dir(api):
@@ -85,15 +107,29 @@ def download_csv_dir(api):
     init_ui.reset_progress(api, g.TASK_ID, 1)
 
 
-def process_image_by_url(image_url, image_names, ds_images_names, dataset, app_logger):
+def process_image_by_url(api, image_url, image_names, ds_images_names, dataset, app_logger):
     image_url = image_url.strip()
-    image_name = os.path.basename(os.path.normpath(image_url)) + ".png"
+    extension = os.path.splitext(image_url)[1]
+    if not extension:
+        sly.logger.warn(f"Image [{image_url}] doesn't have extension in link")    
+    image_name = os.path.basename(os.path.normpath(image_url))
     save_path = os.path.join(g.img_dir, image_name)
     if os.path.isfile(save_path):
         image_name = validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger)
         save_path = os.path.join(g.img_dir, image_name)
-    download_file_from_link(image_url, save_path, image_name, app_logger)
+    download_file_from_link(api, image_url, save_path, image_name, app_logger)
     return image_name, save_path
+
+
+def process_image_link(api, image_url, image_names, ds_images_names, dataset, app_logger, state):
+    image_url = image_url.strip()
+    extension = os.path.splitext(image_url)[1]
+    if not extension:
+        sly.logger.warn(f"Image [{image_url}] doesn't have extension in link")
+    image_name = os.path.basename(os.path.normpath(image_url))    
+    image_name = validate_image_name(image_name, image_names, ds_images_names, dataset, app_logger)
+    image_info = download_file_from_link_directly(api, image_url, image_name, dataset, state)    
+    return image_info
 
 
 def process_image_by_path(image_path, image_names, ds_images_names, dataset, app_logger):
@@ -116,9 +152,9 @@ def process_image_by_local_path(image_path, image_names, ds_images_names, datase
     return image_name, image_path
 
 
-def process_image(is_url, image_name, image_names, ds_images_names, dataset, app_logger):
+def process_image(api, is_url, image_name, image_names, ds_images_names, dataset, app_logger):
     if is_url:
-        image_name, image_path = process_image_by_url(image_name, image_names, ds_images_names, dataset, app_logger)
+        image_name, image_path = process_image_by_url(api, image_name, image_names, ds_images_names, dataset, app_logger)
     else:
         if not g.download_by_dirs:
             image_name, image_path = process_image_by_path(image_name, image_names, ds_images_names, dataset,
@@ -158,7 +194,28 @@ def process_ann(csv_row, image_path, tag_col_name):
             tag_metas.append(tag_meta)
 
     tag_col = sly.TagCollection(tag_metas)
-    ann = sly.Annotation.from_img_path(image_path).add_tags(tag_col)
+       
+    ann = sly.Annotation.from_img_path(image_path).add_tags(tag_col)    
+    return ann
+
+
+def process_ann_link(csv_row, tag_col_name):
+    if csv_row[tag_col_name] is None or csv_row[tag_col_name] == '':
+        ann = sly.Annotation(img_size=[None,None])
+        return ann
+
+    tag_metas = []
+    tag_names = csv_row[tag_col_name].strip()
+    tag_names = tag_names.split(g.TAGS_DELIMITER)
+    for tag_name in tag_names:
+        if tag_name != '':
+            tag_name.strip()
+            tag_meta = g.project_meta.get_tag_meta(tag_name)
+            tag_metas.append(tag_meta)
+
+    tag_col = sly.TagCollection(tag_metas)
+    
+    ann = sly.Annotation(img_size=[None,None]).add_tags(tag_col)
     return ann
 
 
@@ -199,7 +256,7 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
         anns = []
         for row in batch:
             try:
-                image_name, image_path = process_image(g.is_url, row[image_col_name], image_names,
+                image_name, image_path = process_image(api, g.is_url, row[image_col_name], image_names,
                                                        ds_images_names, dataset, app_logger)
                 processed_images_counter += 1
             except Exception:
@@ -217,6 +274,46 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
         if tag_col_name is not None:
             images_ids = [image_info.id for image_info in images_infos]
             api.annotation.upload_anns(images_ids, anns)
+        progress_items_cb(len(batch))
+
+    init_ui.reset_progress(api, g.TASK_ID, 1)
+    show_output_message(api, processed_images_counter, project, dataset.name)
+
+
+def process_images_from_csv_link(api, state, image_col_name, tag_col_name, app_logger):
+    
+    processed_images_counter = 0
+
+    project, dataset = create_project(api, state)
+    ds_images_names = set([img.name for img in api.image.get_list(dataset.id)])
+
+    progress_items_cb = init_ui.get_progress_cb(api, g.TASK_ID, 1, "Processing CSV", len(g.csv_reader))
+    for batch in sly.batched(g.csv_reader):        
+        images_infos = []
+        image_names = []
+        image_paths = []
+        anns = []
+        for row in batch:
+            try:
+                image_info = process_image_link(api, row[image_col_name], image_names,
+                                                       ds_images_names, dataset, app_logger, state)
+                processed_images_counter += 1
+            except Exception:
+                app_logger.warn(f"Couldn't process: {row[image_col_name]}, item will be skipped")
+                continue
+
+            if tag_col_name is not None:
+                ann = process_ann_link(row, tag_col_name)
+                anns.append(ann)
+
+            images_infos.append(image_info)
+            image_names.append(image_info.name)
+        
+        bounds_validation = True if not state["forceMetadata"] else False
+
+        if tag_col_name is not None:
+            images_ids = [image_info.id for image_info in images_infos]
+            api.annotation.upload_anns(images_ids, anns, skip_bounds_validation=bounds_validation)
         progress_items_cb(len(batch))
 
     init_ui.reset_progress(api, g.TASK_ID, 1)
