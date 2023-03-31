@@ -198,7 +198,7 @@ https://images.io/image_example_5.png;tag1,tag3
 # Screenshot
 
 ### App interface
-<img src="https://user-images.githubusercontent.com/57998637/229188358-9f6cf04a-bb2b-436e-81cd-3ea0493080a6.png" width="1238px"/>
+<img src="https://user-images.githubusercontent.com/57998637/229192985-5b41cc0a-0f77-4496-a1ac-9060795d4810.png" width="1237px"/>
 
 
 ### Cloud storage link example
