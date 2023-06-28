@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://imgur.com/IcPLSjq.png"/>
+<img src="media/poster.jpeg"/>
 
 
 # CSV to Images Project
@@ -183,16 +183,16 @@ https://images.io/image_example_5.png;tag1,tag3
 # How to Run
 1. Add [Import Images from CSV](https://ecosystem.supervise.ly/apps/import-images-from-csv) to your team from Ecosystem.
 
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/import-images-from-csv" src="https://imgur.com/Cqe7fjv.png" width="450px" style='padding-bottom: 20px'/>  
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/import-images-from-csv" src="media/htr1.png" width="450px" style='padding-bottom: 20px'/>  
 
 2. Run app from the context menu of the `.CSV` file:
 
-<img src="https://imgur.com/s29C9PG.png" width="100%"/>
+<img src="media/htr2.png" width="100%"/>
 
 
 # Demo
 <a data-key="sly-embeded-video-link" href="https://youtu.be/JkZ3Sg-hRH4" data-video-code="JkZ3Sg-hRH4">
-    <img src="https://imgur.com/JHPAtHa.jpg" alt="SLY_EMBEDED_VIDEO_LINK"  width="70%">
+    <img src="media/dv.png" alt="SLY_EMBEDED_VIDEO_LINK"  width="70%">
 </a>
 
 # Screenshot
