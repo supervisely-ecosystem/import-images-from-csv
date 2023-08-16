@@ -40,7 +40,8 @@ def create_project(api, state):
     elif state["dstProjectMode"] == "existingProject":
         project = api.project.get_info_by_id(state["dstProjectId"])
 
-    api.project.update_meta(project.id, g.project_meta.to_json())
+    if g.project_meta is not None:
+        api.project.update_meta(project.id, g.project_meta.to_json())
     if project is None:
         sly.logger.error("Result project is None (not found or not created)")
         return
