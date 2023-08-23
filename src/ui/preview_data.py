@@ -75,7 +75,7 @@ def create_preview_table_from_csv_file(csv_path):
         reader = [row for row in reader]
         stripped_reader = []
         for row in reader:
-            stripped_row = {key: value.strip() for key, value in row.items()}
+            stripped_row = {k: v.strip() for k, v in row.items() if k is not None and type(v) == str}
             stripped_reader.append(stripped_row)
         g.csv_reader = stripped_reader
         g.image_col_name, g.tag_col_name = validate_column_names(stripped_reader[0])
