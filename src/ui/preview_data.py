@@ -18,7 +18,7 @@ def create_project_meta_from_csv_tags(total_tags):
 def flat_tag_list(total_tags):
     tags = []
     for tag in total_tags:
-        if tag is None or tag == '':
+        if tag is None or tag == "":
             continue
         else:
             if g.TAGS_DELIMITER in tag:
@@ -31,7 +31,7 @@ def flat_tag_list(total_tags):
             total_tags.append(sublist)
         else:
             for tag in sublist:
-                if tag != '':
+                if tag != "":
                     total_tags.append(tag)
 
     total_tags = list(set(total_tags))
@@ -39,15 +39,21 @@ def flat_tag_list(total_tags):
 
 
 def check_column_names(col_names_validate):
-    if not any(image_url_name in g.possible_image_url_col_names for image_url_name in col_names_validate) and not any(
-            image_path_name in g.possible_image_path_col_names for image_path_name in col_names_validate):
-        raise Exception("IMAGE COLUMN NAME IS INVALID, PLEASE USE ONE OF:\n"
-                        f"{g.possible_image_url_col_names} FOR URL AND "
-                        f"{g.possible_image_path_col_names} FOR PATH")
+    if not any(
+        image_url_name in g.possible_image_url_col_names for image_url_name in col_names_validate
+    ) and not any(
+        image_path_name in g.possible_image_path_col_names for image_path_name in col_names_validate
+    ):
+        raise ValueError(
+            f"Invalid column name for image: '{col_names_validate}' in the first line. "
+            f"Please use: '{g.possible_image_url_col_names[0]}' for URL "
+            f"or '{g.possible_image_path_col_names[0]}' for path in Team Files"
+        )
     if len(col_names_validate) == 2:
         if not any(tag_name in g.possible_tag_col_names for tag_name in col_names_validate):
-            raise Exception("TAG COLUMN NAME IS INVALID, PLEASE USE ONE OF:\n"
-                            f"{g.possible_tag_col_names}")
+            raise ValueError(
+                f"Invalid column name for tag: {col_names_validate[1]}. Please use:{g.possible_tag_col_names[0]}"
+            )
 
 
 def validate_column_names(first_csv_row):
@@ -75,7 +81,9 @@ def create_preview_table_from_csv_file(csv_path):
         reader = [row for row in reader]
         stripped_reader = []
         for row in reader:
-            stripped_row = {k: v.strip() for k, v in row.items() if k is not None and type(v) == str}
+            stripped_row = {
+                k: v.strip() for k, v in row.items() if k is not None and type(v) == str
+            }
             stripped_reader.append(stripped_row)
         g.csv_reader = stripped_reader
         g.image_col_name, g.tag_col_name = validate_column_names(stripped_reader[0])
@@ -101,7 +109,9 @@ def create_preview_table_from_csv_file(csv_path):
 
 def download_and_preview_table(api, task_id):
     api.file.download(g.TEAM_ID, g.INPUT_FILE, g.local_csv_path)
-    csv_table, images_paths, total_tags, need_tag = create_preview_table_from_csv_file(g.local_csv_path)
+    csv_table, images_paths, total_tags, need_tag = create_preview_table_from_csv_file(
+        g.local_csv_path
+    )
 
     fields = [
         {"field": "data.table", "payload": csv_table},

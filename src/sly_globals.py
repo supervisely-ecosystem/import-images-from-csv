@@ -12,8 +12,8 @@ from supervisely.app.v1.app_service import AppService
 if sly.is_development():
     load_dotenv("local.env")
     load_dotenv(os.path.expanduser("~/supervisely.env"))
-    
-    
+
+
 my_app: AppService = AppService()
 api: sly.Api = my_app.public_api
 
@@ -24,8 +24,8 @@ sly.logger.info(f"Root source directory: {root_source_dir}")
 sys.path.append(root_source_dir)
 
 TASK_ID = int(os.environ["TASK_ID"])
-TEAM_ID = int(os.environ['context.teamId'])
-WORKSPACE_ID = int(os.environ['context.workspaceId'])
+TEAM_ID = int(os.environ["context.teamId"])
+WORKSPACE_ID = int(os.environ["context.workspaceId"])
 INPUT_FILE = os.environ["modal.state.slyFile"]
 
 download_by_dirs = True
@@ -37,8 +37,8 @@ remote_csv_dir_path = os.path.dirname(INPUT_FILE)
 img_dir = os.path.join(storage_dir, "img_dir")
 mkdir(img_dir, True)
 
-DEFAULT_DELIMITER = ';'
-TAGS_DELIMITER = ','
+DEFAULT_DELIMITER = ";"
+TAGS_DELIMITER = ","
 
 possible_image_url_col_names = ["url"]
 possible_image_path_col_names = ["path"]
@@ -52,5 +52,3 @@ csv_reader = None
 
 is_url = False
 project_meta = None
-
-

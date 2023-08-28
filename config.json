@@ -1,22 +1,17 @@
 {
-    "name": "Import Images from CSV",
-    "type": "app",
-    "categories": [
-        "import",
-        "images"
-    ],
-    "description": "Upload images using .CSV file",
-    "docker_image": "supervisely/import-export:6.72.110",
-    "instance_version": "6.4.57",
-    "main_script": "src/main.py",
-    "task_location": "workspace_tasks",
-    "icon": "https://imgur.com/zlcLjAM.png",
-    "icon_cover": false,
-    "icon_background": "#FFFFFF",
-    "context_menu": {
-        "target": [
-            "files_file"
-        ]
-    },
-    "poster": "https://imgur.com/IcPLSjq.png"
+  "name": "Import Images from CSV",
+  "type": "app",
+  "categories": ["import", "images"],
+  "description": "Upload images using .CSV file",
+  "docker_image": "supervisely/import-export:6.72.112",
+  "instance_version": "6.4.57",
+  "main_script": "src/main.py",
+  "task_location": "workspace_tasks",
+  "icon": "https://imgur.com/zlcLjAM.png",
+  "icon_cover": false,
+  "icon_background": "#FFFFFF",
+  "context_menu": {
+    "target": ["files_file"]
+  },
+  "poster": "https://imgur.com/IcPLSjq.png"
 }
