@@ -77,8 +77,13 @@ def validate_column_names(first_csv_row):
 def create_preview_table_from_csv_file(csv_path):
     csv_table = {"columns": [], "data": []}
     with open(csv_path, "r") as images_csv:
-        reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
-        reader = [row for row in reader]
+        try:
+            reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
+            reader = [row for row in reader]
+        except UnicodeDecodeError as u:
+            raise UnicodeDecodeError(f"Invalid csv file encoding ({csv_path}): {u}")
+        except Exception as e:
+            raise Exception(f"Can't read csv file ({csv_path}): {e}")
         stripped_reader = []
         for row in reader:
             stripped_row = {
