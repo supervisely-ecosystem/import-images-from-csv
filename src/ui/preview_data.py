@@ -79,11 +79,14 @@ def create_preview_table_from_csv_file(csv_path):
     with open(csv_path, "r") as images_csv:
         try:
             reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
+            if len(reader.fieldnames) > 0 and g.INCORRECT_COLUMN_DELIMITER in reader.fieldnames[0]:
+                raise ValueError(
+                    f"Invalid column delimiter: '{g.INCORRECT_COLUMN_DELIMITER}'. "
+                    f"Please, use: '{g.DEFAULT_DELIMITER}' - for column delimiter and '{g.TAGS_DELIMITER}' - for tags delimiter"
+                )
             reader = [row for row in reader]
-        except UnicodeDecodeError as u:
-            raise UnicodeDecodeError(f"Invalid csv file encoding ({csv_path}): {u}")
         except Exception as e:
-            raise Exception(f"Can't read csv file ({csv_path}): {e}")
+            raise Exception(f"Can't read csv file. {e}")
         stripped_reader = []
         for row in reader:
             stripped_row = {
