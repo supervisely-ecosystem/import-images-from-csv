@@ -38,6 +38,7 @@ img_dir = os.path.join(storage_dir, "img_dir")
 mkdir(img_dir, True)
 
 DEFAULT_DELIMITER = ";"
+INCORRECT_COLUMN_DELIMITER = ","
 TAGS_DELIMITER = ","
 
 possible_image_url_col_names = ["url"]
