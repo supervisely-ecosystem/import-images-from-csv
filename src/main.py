@@ -4,6 +4,9 @@ import pathlib
 
 import sly_globals as g
 import supervisely as sly
+
+from supervisely import handle_exceptions
+
 import init_ui
 
 from ui.preview_data import download_and_preview_table
@@ -43,6 +46,7 @@ def process(api: sly.Api, task_id, context, state, app_logger):
     elif state["addMode"] == "addByLink":
         process_images_from_csv_link(api, state, g.image_col_name, g.tag_col_name, app_logger)
 
+@handle_exceptions
 def main():
     sly.logger.info("Script arguments", extra={
         "TEAM_ID": g.TEAM_ID,
