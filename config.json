@@ -6,6 +6,7 @@
   "docker_image": "supervisely/import-export:6.72.182",
   "instance_version": "6.4.57",
   "main_script": "src/main.py",
+  "modal_template": "src/modal.html",
   "task_location": "workspace_tasks",
   "icon": "https://imgur.com/zlcLjAM.png",
   "icon_cover": false,
