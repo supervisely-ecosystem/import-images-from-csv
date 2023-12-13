@@ -76,6 +76,12 @@ def validate_column_names(first_csv_row):
 
 def create_preview_table_from_csv_file(csv_path):
     csv_table = {"columns": [], "data": []}
+    if not os.path.exists(csv_path):
+        raise FileNotFoundError(f"File '{csv_path}' not found")
+    if os.path.getsize(csv_path) == 0:
+        raise ValueError(f"File '{csv_path}' is empty")
+    if sly.fs.get_file_ext(csv_path) != ".csv":
+        raise RuntimeError(f"File '{csv_path}' is not csv. Read the app description.")
     with open(csv_path, "r") as images_csv:
         try:
             reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
@@ -88,6 +94,9 @@ def create_preview_table_from_csv_file(csv_path):
         except Exception as e:
             raise Exception(f"Can't read csv file. {e}")
         stripped_reader = []
+        if len(reader) == 0:
+            raise ValueError(f"File '{csv_path}' is empty")
+        sly.logger.info(f"Total rows in csv file: {len(reader)}")
         for row in reader:
             stripped_row = {
                 k: v.strip() for k, v in row.items() if k is not None and type(v) == str
