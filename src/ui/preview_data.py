@@ -80,8 +80,6 @@ def create_preview_table_from_csv_file(csv_path):
         raise FileNotFoundError(f"File '{csv_path}' not found")
     if os.path.getsize(csv_path) == 0:
         raise ValueError(f"File '{csv_path}' is empty")
-    if sly.fs.get_file_ext(csv_path) != ".csv":
-        raise RuntimeError(f"File '{csv_path}' is not csv. Read the app description.")
     with open(csv_path, "r") as images_csv:
         try:
             reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
@@ -125,6 +123,9 @@ def create_preview_table_from_csv_file(csv_path):
 
 
 def download_and_preview_table(api, task_id):
+    file_info = api.file.get_info_by_path(g.TEAM_ID, g.INPUT_FILE)
+    if file_info.ext != "csv":
+        raise RuntimeError(f"File '{g.INPUT_FILE}' is not csv. Read the app description.")
     api.file.download(g.TEAM_ID, g.INPUT_FILE, g.local_csv_path)
     csv_table, images_paths, total_tags, need_tag = create_preview_table_from_csv_file(
         g.local_csv_path
