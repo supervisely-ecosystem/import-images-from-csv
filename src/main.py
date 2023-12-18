@@ -14,8 +14,10 @@ from ui.import_settings import process_images_from_csv, process_images_from_csv_
 
 
 def define_download_method(api, csv_path, images_paths):
-    csv_root_path = os.path.join(os.path.dirname(csv_path), '')
-    images_paths = [os.path.join(csv_root_path, image_path[1:]) for image_path in images_paths]  # relative to absolute
+    csv_root_path = os.path.join(os.path.dirname(csv_path), "")
+    images_paths = [
+        os.path.join(csv_root_path, image_path[1:]) for image_path in images_paths
+    ]  # relative to absolute
 
     files_in_directory = api.file.list2(g.TEAM_ID, csv_root_path)
 
@@ -41,18 +43,23 @@ def preview(api: sly.Api, task_id, context, state, app_logger):
 @g.my_app.callback("process")
 @sly.timeit
 def process(api: sly.Api, task_id, context, state, app_logger):
+    if state["dstProjectMode"] == "existingProject":
+        dst_project_id = state["dstProjectId"]
+        project_meta = sly.ProjectMeta.from_json(api.project.get_meta(dst_project_id))
+        g.dst_project_meta = project_meta
+
     if state["addMode"] == "copyData":
         process_images_from_csv(api, state, g.image_col_name, g.tag_col_name, app_logger)
     elif state["addMode"] == "addByLink":
         process_images_from_csv_link(api, state, g.image_col_name, g.tag_col_name, app_logger)
 
+
 @handle_exceptions
 def main():
-    sly.logger.info("Script arguments", extra={
-        "TEAM_ID": g.TEAM_ID,
-        "WORKSPACE_ID": g.WORKSPACE_ID,
-        "INPUT_FILE": g.INPUT_FILE
-    })
+    sly.logger.info(
+        "Script arguments",
+        extra={"TEAM_ID": g.TEAM_ID, "WORKSPACE_ID": g.WORKSPACE_ID, "INPUT_FILE": g.INPUT_FILE},
+    )
 
     data = {}
     state = {}
