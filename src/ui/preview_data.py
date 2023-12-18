@@ -5,14 +5,16 @@ import sly_globals as g
 import supervisely as sly
 
 
-def create_project_meta_from_csv_tags(total_tags):
-    tag_metas = []
+def create_project_meta_from_csv_tags(total_tags, state, api):
+    if state["dstProjectMode"] == "existingProject":
+        dst_project_id = state["dstProjectId"]
+        dst_project_meta = sly.ProjectMeta.from_json(api.project.get_meta(dst_project_id))
+    else:
+        dst_project_meta = sly.ProjectMeta()
     for tag_name in total_tags:
         tag_meta = sly.TagMeta(tag_name, sly.TagValueType.NONE)
-        tag_metas.append(tag_meta)
-    tag_meta_col = sly.TagMetaCollection(tag_metas)
-    project_meta = sly.ProjectMeta(tag_metas=tag_meta_col)
-    return project_meta
+        dst_project_meta = dst_project_meta.add_tag_meta(tag_meta)
+    return dst_project_meta
 
 
 def flat_tag_list(total_tags):
@@ -74,7 +76,7 @@ def validate_column_names(first_csv_row):
     return image_col_name, tag_col_name
 
 
-def create_preview_table_from_csv_file(csv_path):
+def create_preview_table_from_csv_file(csv_path, state, api):
     csv_table = {"columns": [], "data": []}
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"File '{csv_path}' not found")
@@ -108,7 +110,7 @@ def create_preview_table_from_csv_file(csv_path):
             for idx, row in enumerate(stripped_reader):
                 csv_table["data"].append([idx + 1, row[g.image_col_name], row[g.tag_col_name]])
             total_tags = flat_tag_list(list(set([row[g.tag_col_name] for row in stripped_reader])))
-            g.project_meta = create_project_meta_from_csv_tags(total_tags)
+            g.project_meta = create_project_meta_from_csv_tags(total_tags, state, api)
             need_tag = "add"
         else:
             csv_table["columns"] = ["row", g.image_col_name]
@@ -122,13 +124,13 @@ def create_preview_table_from_csv_file(csv_path):
     return csv_table, images_paths, total_tags, need_tag
 
 
-def download_and_preview_table(api, task_id):
+def download_and_preview_table(api, task_id, state):
     file_info = api.file.get_info_by_path(g.TEAM_ID, g.INPUT_FILE)
     if file_info.ext != "csv":
         raise RuntimeError(f"File '{g.INPUT_FILE}' is not csv. Read the app description.")
     api.file.download(g.TEAM_ID, g.INPUT_FILE, g.local_csv_path)
     csv_table, images_paths, total_tags, need_tag = create_preview_table_from_csv_file(
-        g.local_csv_path
+        g.local_csv_path, state, api
     )
 
     fields = [

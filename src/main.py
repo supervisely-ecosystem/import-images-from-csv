@@ -14,8 +14,10 @@ from ui.import_settings import process_images_from_csv, process_images_from_csv_
 
 
 def define_download_method(api, csv_path, images_paths):
-    csv_root_path = os.path.join(os.path.dirname(csv_path), '')
-    images_paths = [os.path.join(csv_root_path, image_path[1:]) for image_path in images_paths]  # relative to absolute
+    csv_root_path = os.path.join(os.path.dirname(csv_path), "")
+    images_paths = [
+        os.path.join(csv_root_path, image_path[1:]) for image_path in images_paths
+    ]  # relative to absolute
 
     files_in_directory = api.file.list2(g.TEAM_ID, csv_root_path)
 
@@ -33,7 +35,7 @@ def define_download_method(api, csv_path, images_paths):
 @g.my_app.callback("preview")
 @sly.timeit
 def preview(api: sly.Api, task_id, context, state, app_logger):
-    images_paths = download_and_preview_table(api, task_id)
+    images_paths = download_and_preview_table(api, task_id, state)
     if not g.is_url:
         g.images_size_threshold = define_download_method(api, g.INPUT_FILE, images_paths)
 
@@ -46,13 +48,13 @@ def process(api: sly.Api, task_id, context, state, app_logger):
     elif state["addMode"] == "addByLink":
         process_images_from_csv_link(api, state, g.image_col_name, g.tag_col_name, app_logger)
 
+
 @handle_exceptions
 def main():
-    sly.logger.info("Script arguments", extra={
-        "TEAM_ID": g.TEAM_ID,
-        "WORKSPACE_ID": g.WORKSPACE_ID,
-        "INPUT_FILE": g.INPUT_FILE
-    })
+    sly.logger.info(
+        "Script arguments",
+        extra={"TEAM_ID": g.TEAM_ID, "WORKSPACE_ID": g.WORKSPACE_ID, "INPUT_FILE": g.INPUT_FILE},
+    )
 
     data = {}
     state = {}
