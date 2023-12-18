@@ -53,3 +53,4 @@ csv_reader = None
 
 is_url = False
 project_meta = None
+dst_project_meta = None
