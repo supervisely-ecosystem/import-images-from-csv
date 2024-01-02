@@ -34,8 +34,6 @@ def define_download_method(api, csv_path, images_paths):
 @g.my_app.callback("preview")
 @sly.timeit
 def preview(api: sly.Api, task_id, context, state, app_logger):
-    # ! only for debug
-    api.file.get_info_by_path(g.TEAM_ID, g.INPUT_FILE).abc
     images_paths = download_and_preview_table(api, task_id)
     if not g.is_url:
         g.images_size_threshold = define_download_method(api, g.INPUT_FILE, images_paths)
@@ -44,6 +42,8 @@ def preview(api: sly.Api, task_id, context, state, app_logger):
 @g.my_app.callback("process")
 @sly.timeit
 def process(api: sly.Api, task_id, context, state, app_logger):
+    # ! only for debug
+    api.file.get_info_by_path(g.TEAM_ID, g.INPUT_FILE).abc
     if state["dstProjectMode"] == "existingProject":
         dst_project_id = state["dstProjectId"]
         project_meta = sly.ProjectMeta.from_json(api.project.get_meta(dst_project_id))
