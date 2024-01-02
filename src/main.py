@@ -1,16 +1,10 @@
 import os
-import pathlib
-
-
-import sly_globals as g
-import supervisely as sly
-
-from supervisely import handle_exceptions
 
 import init_ui
-
-from ui.preview_data import download_and_preview_table
+import sly_globals as g
+import supervisely as sly
 from ui.import_settings import process_images_from_csv, process_images_from_csv_link
+from ui.preview_data import download_and_preview_table
 
 
 def define_download_method(api, csv_path, images_paths):
@@ -54,7 +48,6 @@ def process(api: sly.Api, task_id, context, state, app_logger):
         process_images_from_csv_link(api, state, g.image_col_name, g.tag_col_name, app_logger)
 
 
-@handle_exceptions
 def main():
     sly.logger.info(
         "Script arguments",
@@ -74,4 +67,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sly.main_wrapper("main", main)
+    sly.main_wrapper("main", main, log_for_agent=False)
