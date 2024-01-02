@@ -45,7 +45,8 @@ def create_project(api, state):
         project = api.project.get_info_by_id(state["dstProjectId"])
 
     if g.project_meta is not None:
-        g.project_meta = g.project_meta.merge(g.dst_project_meta)
+        if g.dst_project_meta is not None:
+            g.project_meta = g.project_meta.merge(g.dst_project_meta)
         api.project.update_meta(project.id, g.project_meta.to_json())
     if project is None:
         sly.logger.error("Result project is None (not found or not created)")
