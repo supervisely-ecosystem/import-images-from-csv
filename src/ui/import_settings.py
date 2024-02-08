@@ -299,6 +299,8 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
                     app_logger,
                 )
                 processed_images_counter += 1
+                if not sly.fs.file_exists(image_path):
+                    raise FileNotFoundError(f"File {image_path} not found")
             except Exception:
                 app_logger.warn(f"Couldn't process: {row[image_col_name]}, item will be skipped")
                 continue
