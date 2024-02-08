@@ -74,12 +74,44 @@ def validate_column_names(first_csv_row):
     return image_col_name, tag_col_name
 
 
+def handle_headless_csv(csv_path):
+    content = []
+    updated = False
+    with open(csv_path, "r") as file:
+        # read the file, correct it and write it back
+        content = file.readlines()
+        if len(content) == 0:
+            raise ValueError(f"File '{csv_path}' is empty")
+        first_line = content[0].strip()
+        has_tags = False
+        for line in content:
+            if g.DEFAULT_DELIMITER in line:
+                has_tags = True
+                break
+        if first_line.startswith("https://") or first_line.startswith("http://"):
+            sly.logger.info("Headless csv detected. Adding 'url' column name to the first line.")
+            header = "url" + g.DEFAULT_DELIMITER + "tag\n" if has_tags else "url\n"
+            content.insert(0, header)
+            updated = True
+        elif first_line.startswith("/"):
+            sly.logger.info("Headless csv detected. Adding 'path' column name to the first line.")
+            header = "path" + g.DEFAULT_DELIMITER + "tag\n" if has_tags else "path\n"
+            content.insert(0, header)
+            updated = True
+    
+    if updated:
+        sly.fs.silent_remove(csv_path)
+        with open(csv_path, "w") as file:
+            file.writelines(content)
+
+
 def create_preview_table_from_csv_file(csv_path):
     csv_table = {"columns": [], "data": []}
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"File '{csv_path}' not found")
     if os.path.getsize(csv_path) == 0:
         raise ValueError(f"File '{csv_path}' is empty")
+    handle_headless_csv(csv_path)
     with open(csv_path, "r") as images_csv:
         try:
             reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
@@ -101,13 +133,21 @@ def create_preview_table_from_csv_file(csv_path):
             }
             stripped_reader.append(stripped_row)
         g.csv_reader = stripped_reader
-        g.image_col_name, g.tag_col_name = validate_column_names(stripped_reader[0])
+        row_to_validate = {}
+        for row in stripped_reader:
+            if len(row) > len(row_to_validate) and len(row) < 3:
+                row_to_validate = row
+        if len(row_to_validate) == 0:
+            row_to_validate = stripped_reader[0]
+        g.image_col_name, g.tag_col_name = validate_column_names(row_to_validate)
 
         if g.tag_col_name is not None:
             csv_table["columns"] = ["row", g.image_col_name, g.tag_col_name]
             for idx, row in enumerate(stripped_reader):
-                csv_table["data"].append([idx + 1, row[g.image_col_name], row[g.tag_col_name]])
-            total_tags = flat_tag_list(list(set([row[g.tag_col_name] for row in stripped_reader])))
+                csv_table["data"].append([idx + 1, row[g.image_col_name], row.get(g.tag_col_name, "")])
+            total_tags = flat_tag_list(
+                list(set([row.get(g.tag_col_name) for row in stripped_reader]))
+            )
             g.project_meta = create_project_meta_from_csv_tags(total_tags)
             need_tag = "add"
         else:
