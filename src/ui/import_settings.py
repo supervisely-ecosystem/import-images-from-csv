@@ -208,7 +208,7 @@ def validate_image_name(image_name, image_names, ds_images_names, dataset, app_l
 
 
 def process_ann(csv_row, image_path, tag_col_name):
-    if csv_row[tag_col_name] is None or csv_row[tag_col_name] == "":
+    if csv_row.get(tag_col_name) is None or csv_row.get(tag_col_name) == "":
         ann = sly.Annotation.from_img_path(image_path)
         return ann
 
@@ -228,7 +228,7 @@ def process_ann(csv_row, image_path, tag_col_name):
 
 
 def process_ann_link(csv_row, tag_col_name):
-    if csv_row[tag_col_name] is None or csv_row[tag_col_name] == "":
+    if csv_row.get(tag_col_name) is None or csv_row.get(tag_col_name) == "":
         ann = sly.Annotation(img_size=[None, None])
         return ann
 
