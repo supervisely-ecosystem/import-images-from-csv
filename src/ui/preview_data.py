@@ -1,8 +1,9 @@
 import csv
 import os.path
 
-import sly_globals as g
 import supervisely as sly
+
+import sly_globals as g
 
 
 def create_project_meta_from_csv_tags(total_tags):
@@ -74,7 +75,23 @@ def validate_column_names(first_csv_row):
     return image_col_name, tag_col_name
 
 
-def handle_headless_csv(csv_path):
+def first_line_is_url(first_line):
+    first_line = first_line.strip().lstrip('"').lstrip("'")
+    markers = ["https://", "http://", "s3://", "azure://", "google://"]
+    for marker in markers:
+        if first_line.startswith(marker):
+            return True
+    return False
+
+
+def first_line_is_path(first_line):
+    first_line = first_line.strip().lstrip('"').lstrip("'")
+    if first_line.startswith("/") or first_line.startswith("agent://"):
+        return True
+    return False
+
+
+def handle_csv_header(csv_path):
     content = []
     updated = False
     with open(csv_path, "r") as file:
@@ -82,23 +99,37 @@ def handle_headless_csv(csv_path):
         content = file.readlines()
         if len(content) == 0:
             raise ValueError(f"File '{csv_path}' is empty")
-        first_line = content[0].strip()
+        first_line = content[0]
         has_tags = False
+        new_header = None
         for line in content:
             if g.DEFAULT_DELIMITER in line:
                 has_tags = True
                 break
-        if first_line.startswith("https://") or first_line.startswith("http://"):
+        if first_line_is_url(first_line):
             sly.logger.info("Headless csv detected. Adding 'url' column name to the first line.")
-            header = "url" + g.DEFAULT_DELIMITER + "tag\n" if has_tags else "url\n"
-            content.insert(0, header)
-            updated = True
-        elif first_line.startswith("/"):
+            new_header = "url" + g.DEFAULT_DELIMITER + "tag\n" if has_tags else "url\n"
+        elif first_line_is_path(first_line):
             sly.logger.info("Headless csv detected. Adding 'path' column name to the first line.")
-            header = "path" + g.DEFAULT_DELIMITER + "tag\n" if has_tags else "path\n"
-            content.insert(0, header)
+            new_header = "path" + g.DEFAULT_DELIMITER + "tag\n" if has_tags else "path\n"
+        if new_header is None:
+            first_line = content[1]
+            if first_line_is_url(first_line):
+                new_header = "url" + g.DEFAULT_DELIMITER + "tag\n" if has_tags else "url\n"
+            elif first_line_is_path(first_line):
+                new_header = "path" + g.DEFAULT_DELIMITER + "tag\n" if has_tags else "path\n"
+            if new_header is not None:
+                content[0] = new_header
+                updated = True
+            else:
+                raise ValueError(
+                    f"Invalid header in csv file. "
+                    f"Please use: 'url' for URLs or 'path' for paths in Team Files"
+                )
+        else:
+            content.insert(0, new_header)
             updated = True
-    
+
     if updated:
         sly.fs.silent_remove(csv_path)
         with open(csv_path, "w") as file:
@@ -111,7 +142,7 @@ def create_preview_table_from_csv_file(csv_path):
         raise FileNotFoundError(f"File '{csv_path}' not found")
     if os.path.getsize(csv_path) == 0:
         raise ValueError(f"File '{csv_path}' is empty")
-    handle_headless_csv(csv_path)
+    handle_csv_header(csv_path)
     with open(csv_path, "r") as images_csv:
         try:
             reader = csv.DictReader(images_csv, delimiter=g.DEFAULT_DELIMITER)
@@ -144,7 +175,9 @@ def create_preview_table_from_csv_file(csv_path):
         if g.tag_col_name is not None:
             csv_table["columns"] = ["row", g.image_col_name, g.tag_col_name]
             for idx, row in enumerate(stripped_reader):
-                csv_table["data"].append([idx + 1, row[g.image_col_name], row.get(g.tag_col_name, "")])
+                csv_table["data"].append(
+                    [idx + 1, row[g.image_col_name], row.get(g.tag_col_name, "")]
+                )
             total_tags = flat_tag_list(
                 list(set([row.get(g.tag_col_name) for row in stripped_reader]))
             )
