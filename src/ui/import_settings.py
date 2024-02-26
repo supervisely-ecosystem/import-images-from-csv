@@ -150,7 +150,9 @@ def process_image_link(api, image_url, image_names, ds_images_names, dataset, ap
 
 
 def process_image_by_path(image_path, image_names, ds_images_names, dataset, app_logger):
-    image_path = os.path.abspath(os.path.join(g.remote_csv_dir_path, image_path.lstrip("/")))
+    remote_path = os.path.abspath(os.path.join(g.remote_csv_dir_path, image_path.lstrip("/")))
+    if g.api.file.exists(g.TEAM_ID, remote_path):
+        image_path = remote_path
     image_name = get_file_name_with_ext(image_path)
     save_path = os.path.join(g.img_dir, image_name)
     if os.path.isfile(save_path):
