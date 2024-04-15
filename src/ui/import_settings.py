@@ -1,13 +1,13 @@
 import os
-import init_ui
-import sly_globals as g
-import supervisely as sly
-from supervisely.io.fs import download, get_file_name_with_ext
-from supervisely._utils import generate_free_name
-
 import shutil  # @TODO: SDK fix — api.file.download_directory (creates root dir if download from Team Files root)
 import tarfile
-from supervisely.io.fs import silent_remove
+
+import supervisely as sly
+from supervisely._utils import generate_free_name
+from supervisely.io.fs import download, get_file_name_with_ext, silent_remove
+
+import init_ui
+import sly_globals as g
 
 
 def download_directory(team_id, remote_path, local_save_path, progress_cb=None):
@@ -32,7 +32,7 @@ def download_directory(team_id, remote_path, local_save_path, progress_cb=None):
     shutil.rmtree(temp_dir)
 
 
-def create_project(api, state):
+def create_project(api: sly.Api, state):
     project = None
     if state["dstProjectMode"] == "newProject":
         project = api.project.create(
@@ -72,7 +72,7 @@ def check_is_bucket_link(link):
     return any(link.startswith(prefix) for prefix in bucket_prefixes)
 
 
-def download_file_from_link(api, link, save_path, file_name, app_logger):
+def download_file_from_link(api: sly.Api, link, save_path, file_name, app_logger):
     if check_is_bucket_link(link):
         try:
             api.remote_storage.download_path(link, save_path)
@@ -98,7 +98,7 @@ def download_file_from_link_directly(api: sly.Api, link, file_name, dataset, sta
     return image_info
 
 
-def download_csv_dir(api):
+def download_csv_dir(api: sly.Api):
     csv_dir_name = os.path.dirname(g.INPUT_FILE.lstrip("/").rstrip("/"))
     save_dir = os.path.join(os.path.dirname(g.local_csv_path), csv_dir_name)
 
@@ -122,7 +122,9 @@ def download_csv_dir(api):
     init_ui.reset_progress(api, g.TASK_ID, 1)
 
 
-def process_image_by_url(api, image_url, image_names, ds_images_names, dataset, app_logger):
+def process_image_by_url(
+    api: sly.Api, image_url, image_names, ds_images_names, dataset, app_logger
+):
     image_url = image_url.strip()
     extension = os.path.splitext(image_url)[1]
     if not extension:
@@ -138,7 +140,9 @@ def process_image_by_url(api, image_url, image_names, ds_images_names, dataset, 
     return image_name, save_path
 
 
-def process_image_link(api, image_url, image_names, ds_images_names, dataset, app_logger, state):
+def process_image_link(
+    api: sly.Api, image_url, image_names, ds_images_names, dataset, app_logger, state
+):
     image_url = image_url.strip()
     extension = os.path.splitext(image_url)[1]
     if not extension:
@@ -175,7 +179,9 @@ def process_image_by_local_path(image_path, image_names, ds_images_names, datase
     return image_name, image_path
 
 
-def process_image(api, is_url, image_name, image_names, ds_images_names, dataset, app_logger):
+def process_image(
+    api: sly.Api, is_url, image_name, image_names, ds_images_names, dataset, app_logger
+):
     if is_url:
         image_name, image_path = process_image_by_url(
             api, image_name, image_names, ds_images_names, dataset, app_logger
@@ -249,7 +255,7 @@ def process_ann_link(csv_row, tag_col_name):
     return ann
 
 
-def show_output_message(api, processed_images_counter, project, dataset_name):
+def show_output_message(api: sly.Api, processed_images_counter, project, dataset_name):
     modal_message = "image" if processed_images_counter == 1 else "images"
 
     g.my_app.show_modal_window(
@@ -273,7 +279,7 @@ def show_output_message(api, processed_images_counter, project, dataset_name):
     g.api.task.set_fields(g.TASK_ID, fields)
 
 
-def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger):
+def process_images_from_csv(api: sly.Api, state, image_col_name, tag_col_name, app_logger):
     if not g.is_url and g.download_by_dirs:
         download_csv_dir(api)
 
@@ -314,6 +320,7 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
             image_paths.append(image_path)
             image_names.append(image_name)
 
+        image_names = api.image.get_free_names(dataset.id, image_names)
         images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)
         if tag_col_name is not None:
             images_ids = [image_info.id for image_info in images_infos]
@@ -324,7 +331,7 @@ def process_images_from_csv(api, state, image_col_name, tag_col_name, app_logger
     show_output_message(api, processed_images_counter, project, dataset.name)
 
 
-def process_images_from_csv_link(api, state, image_col_name, tag_col_name, app_logger):
+def process_images_from_csv_link(api: sly.Api, state, image_col_name, tag_col_name, app_logger):
     processed_images_counter = 0
 
     project, dataset = create_project(api, state)
