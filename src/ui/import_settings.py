@@ -1,6 +1,7 @@
 import os
 import shutil  # @TODO: SDK fix — api.file.download_directory (creates root dir if download from Team Files root)
 import tarfile
+from typing import List, Set
 
 import supervisely as sly
 from supervisely._utils import generate_free_name
@@ -291,6 +292,7 @@ def process_images_from_csv(api: sly.Api, state, image_col_name, tag_col_name, a
     progress_items_cb = init_ui.get_progress_cb(
         api, g.TASK_ID, 1, "Processing CSV", len(g.csv_reader)
     )
+    all_image_names = set()
     for batch in sly.batched(g.csv_reader):
         image_paths = []
         image_names = []
@@ -320,8 +322,10 @@ def process_images_from_csv(api: sly.Api, state, image_col_name, tag_col_name, a
             image_paths.append(image_path)
             image_names.append(image_name)
 
-        image_names = api.image.get_free_names(dataset.id, image_names)
-        images_infos = api.image.upload_paths(dataset.id, image_names, image_paths)
+        free_image_names, all_image_names = get_free_names(
+            api, dataset.id, image_names, all_image_names
+        )
+        images_infos = api.image.upload_paths(dataset.id, free_image_names, image_paths)
         if tag_col_name is not None:
             images_ids = [image_info.id for image_info in images_infos]
             api.annotation.upload_anns(images_ids, anns)
@@ -377,3 +381,17 @@ def process_images_from_csv_link(api: sly.Api, state, image_col_name, tag_col_na
 
     init_ui.reset_progress(api, g.TASK_ID, 1)
     show_output_message(api, processed_images_counter, project, dataset.name)
+
+
+def get_free_names(
+    api: sly.Api, dataset_id: int, names: List[str], used_names: Set[str]
+) -> List[str]:
+    images_in_dataset = api.image.get_list(dataset_id, force_metadata_for_links=False)
+    new_used_names = {image_info.name for image_info in images_in_dataset}
+    for name in new_used_names:
+        used_names.add(name)
+    new_names = [
+        generate_free_name(used_names, name, with_ext=True, extend_used_names=True)
+        for name in names
+    ]
+    return new_names, used_names
