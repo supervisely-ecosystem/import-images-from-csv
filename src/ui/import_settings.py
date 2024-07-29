@@ -331,6 +331,10 @@ def process_images_from_csv(api: sly.Api, state, image_col_name, tag_col_name, a
             api.annotation.upload_anns(images_ids, anns)
         progress_items_cb(len(batch))
 
+    
+    # -------------------------------------- Add Workflow Output ------------------------------------- #
+    g.workflow.add_output(project.id)
+    # ----------------------------------------------- - ---------------------------------------------- #
     init_ui.reset_progress(api, g.TASK_ID, 1)
     show_output_message(api, processed_images_counter, project, dataset.name)
 
@@ -379,6 +383,10 @@ def process_images_from_csv_link(api: sly.Api, state, image_col_name, tag_col_na
             api.annotation.upload_anns(images_ids, anns, skip_bounds_validation=bounds_validation)
         progress_items_cb(len(batch))
 
+    
+    # -------------------------------------- Add Workflow Output ------------------------------------- #
+    g.workflow.add_output(project.id)
+    # ----------------------------------------------- - ---------------------------------------------- #
     init_ui.reset_progress(api, g.TASK_ID, 1)
     show_output_message(api, processed_images_counter, project, dataset.name)
 

@@ -1,12 +1,9 @@
 {
   "name": "Import Images from CSV",
   "type": "app",
-  "categories": [
-    "import",
-    "images"
-  ],
+  "categories": ["import", "images"],
   "description": "Upload images using .CSV file",
-  "docker_image": "supervisely/import-export:6.73.60",
+  "docker_image": "supervisely/import-export:6.73.141",
   "instance_version": "6.9.4",
   "main_script": "src/main.py",
   "modal_template": "src/modal.html",
@@ -15,9 +12,7 @@
   "icon_cover": false,
   "icon_background": "#FFFFFF",
   "context_menu": {
-    "target": [
-      "files_file"
-    ]
+    "target": ["files_file"]
   },
   "poster": "https://imgur.com/IcPLSjq.png"
 }
