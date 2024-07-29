@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import supervisely as sly
 from supervisely.io.fs import mkdir
 from supervisely.app.v1.app_service import AppService
+from workflow import Workflow
 
 
 if sly.is_development():
@@ -16,6 +17,7 @@ if sly.is_development():
 
 my_app: AppService = AppService()
 api: sly.Api = my_app.public_api
+workflow = Workflow(api)
 
 shutil.rmtree(my_app.data_dir, ignore_errors=True)
 
