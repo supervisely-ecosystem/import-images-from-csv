@@ -13,11 +13,11 @@
   
 </p>
 
-[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/import-images-from-csv)
-[![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervise.ly/slack)
+[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervisely.com/apps/supervisely-ecosystem/import-images-from-csv)
+[![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervisely.com/slack)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/import-images-from-csv)
-[![views](https://app.supervise.ly/img/badges/views/supervisely-ecosystem/import-images-from-csv.png)](https://supervise.ly)
-[![runs](https://app.supervise.ly/img/badges/runs/supervisely-ecosystem/import-images-from-csv.png)](https://supervise.ly)
+[![views](https://app.supervisely.com/img/badges/views/supervisely-ecosystem/import-images-from-csv.png)](https://supervisely.com)
+[![runs](https://app.supervisely.com/img/badges/runs/supervisely-ecosystem/import-images-from-csv.png)](https://supervisely.com)
 
 </div>
 
@@ -32,7 +32,7 @@ Application key points:
 - `.CSV` columns delimiter is **`;`** (**semicolon**), tags delimiter is **`,`** (**comma**)
 
 
-🔥 Starting from version v1.0.17, the application supports cloud storage link integration and data validation features. You can learn how to use storage links properly in [this article](https://docs.supervise.ly/enterprise-edition/advanced-tuning/s3#links-plugin-cloud-providers-support).
+🔥 Starting from version v1.0.17, the application supports cloud storage link integration and data validation features. You can learn how to use storage links properly in [this article](https://docs.supervisely.com/enterprise-edition/advanced-tuning/s3#links-plugin-cloud-providers-support).
 
 
 
@@ -181,7 +181,7 @@ https://images.io/image_example_5.png;tag1,tag3
 
   
 # How to Run
-1. Add [Import Images from CSV](https://ecosystem.supervise.ly/apps/import-images-from-csv) to your team from Ecosystem.
+1. Add [Import Images from CSV](https://ecosystem.supervisely.com/apps/import-images-from-csv) to your team from Ecosystem.
 
 <img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/import-images-from-csv" src="https://imgur.com/Cqe7fjv.png" width="450px" style='padding-bottom: 20px'/>  
 
