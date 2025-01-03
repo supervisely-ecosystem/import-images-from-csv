@@ -199,7 +199,7 @@ def download_and_preview_table(api, task_id):
     file_info = api.file.get_info_by_path(g.TEAM_ID, g.INPUT_FILE)
     ext = file_info.ext
     if ext is None or ext.lower() != "csv":
-        raise RuntimeError(f"File '{g.INPUT_FILE}' is not csv. Read the app description.")
+        raise RuntimeError(f"File '{g.INPUT_FILE}' is not csv or corrupted. Read the app description.")
     api.file.download(g.TEAM_ID, g.INPUT_FILE, g.local_csv_path)
     csv_table, images_paths, total_tags, need_tag = create_preview_table_from_csv_file(
         g.local_csv_path
