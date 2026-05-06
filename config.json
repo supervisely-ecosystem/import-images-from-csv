@@ -7,7 +7,7 @@
   ],
   "description": "Upload images using .CSV file",
   "docker_image": "supervisely/import-export:6.73.564",
-  "instance_version": "6.11.8",
+  "instance_version": "6.15.60",
   "main_script": "src/main.py",
   "modal_template": "src/modal.html",
   "task_location": "workspace_tasks",
